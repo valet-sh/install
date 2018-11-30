@@ -11,5 +11,5 @@ steps:
       sudo rm -rf /Applications/Xcode.app /Library/Developer/CommandLineTools
       sudo pkgutil --forget com.apple.pkg.CLTools_Executables
       sudo xcode-select --reset
-      echo 'it works'
+      ./install.sh
     displayName: Tests
