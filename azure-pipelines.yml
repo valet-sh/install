@@ -12,4 +12,5 @@ steps:
       sudo pkgutil --forget com.apple.pkg.CLTools_Executables
       sudo xcode-select --reset
       ./install.sh
+      valet.sh
     displayName: Tests
