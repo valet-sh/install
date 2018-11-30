@@ -7,6 +7,9 @@
 # Author: Johann Zelger <j.zelger@techdivision.com>
 ################################################################################
 
+# exit immediately if a command exits with a non-zero status
+set -e
+
 # define variables
 VSH_PREFIX="/usr/local"
 VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="valet-sh"}
