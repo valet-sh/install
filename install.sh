@@ -54,6 +54,9 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     rm -rf "${HOME}/.valet-sh"
     # create install dir
     sudo mkdir "${VSH_INSTALL_DIR}"
+    # set permissions
+    sudo chmod 775 "${VSH_INSTALL_DIR}"
+    sudo chown "${USER}":admin "${VSH_INSTALL_DIR}"
     # install by cloning git repo to install dir
     git clone --quiet "${VSH_GITHUB_REPO_URL}" "${VSH_REPO_DIR}"
     # fetch all tags from application git repo
