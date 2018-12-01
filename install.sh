@@ -55,9 +55,11 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     # cleanup old installations (< version 1.0.0-alpha10)
     rm -rf "${HOME}/.valet.sh"
     rm -rf "${HOME}/.valet-sh"
-    # create install dir
-    sudo mkdir "${VSH_INSTALL_DIR}"
-    # set permissions
+    # create install dir if it does not exist
+    if [ ! -d "${VSH_INSTALL_DIR}" ]; then
+        sudo mkdir "${VSH_INSTALL_DIR}"
+    fi
+    # set correct permissions
     sudo chmod 775 "${VSH_INSTALL_DIR}"
     sudo chown "${USER}":admin "${VSH_INSTALL_DIR}"
     # install by cloning git repo to install dir
