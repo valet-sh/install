@@ -20,7 +20,7 @@ VSH_REPO_DIR="${VSH_INSTALL_DIR}/${VSH_GITHUB_REPO_NAME}"
 
 # if git command is not available, install CLT
 if [ ! -f /Library/Developer/CommandLineTools/usr/bin/git ]; then
-    echo "Installing CLT"    
+    echo "Check Command Line Tools"
     # create macOS flag file, that CLT can be installed on demand
     touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
     # parse CLT software name
@@ -33,24 +33,24 @@ if [ ! -f /Library/Developer/CommandLineTools/usr/bin/git ]; then
         sort |
         tail -n1
     )
+    echo "Installing (${SOFTWARE_CLT_NAME})"
     # install CLT
     softwareupdate -i "${SOFTWARE_CLT_NAME}" &> /dev/null
 fi
 
-# check if ansible-playbook is available
-if [ ! -x "$(command -v ansible-playbook)" ]; then
-    # trigger sudo
+# check if pip is available
+if [ ! -x "$(command -v pip)" ]; then
+    # retrigger sudo
     sudo true
-    echo "Installing Ansible"
-    # if ansible is not available, install pip and ansible
+    echo "Installing pip"
+    # install pip
     sudo easy_install pip &> /dev/null
-    sudo pip install -Iq ansible &> /dev/null
 fi
 
 # check if valet-sh is installed
 if [ ! -d "${VSH_REPO_DIR}" ]; then
     echo "Installing valet-sh"
-    # trigger sudo
+    # retrigger sudo
     sudo true
     # cleanup old installations (< version 1.0.0-alpha10)
     rm -rf "${HOME}/.valet.sh"
@@ -77,6 +77,9 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
             break
         fi
     done
+    echo "Installing dependencies"
+    # install python dependencies via pip
+    sudo pip install -Iq -r requirements.txt &> /dev/null
     # create or override old symlink to prefix bin directory
     sudo ln -sf "${VSH_REPO_DIR}/valet.sh" "${VSH_PREFIX}/bin/"
     # output log
