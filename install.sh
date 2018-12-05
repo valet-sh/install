@@ -33,9 +33,11 @@ if [ ! -f /Library/Developer/CommandLineTools/usr/bin/git ]; then
         sort |
         tail -n1
     )
-    echo "Installing (${SOFTWARE_CLT_NAME})"
+    echo "Installing ${SOFTWARE_CLT_NAME}"
     # install CLT
     softwareupdate -i "${SOFTWARE_CLT_NAME}" &> /dev/null
+    # cleanup
+    rm -rf /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
 fi
 
 # check if pip is available
