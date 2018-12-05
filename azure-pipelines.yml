@@ -3,14 +3,36 @@
 # Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
 
-pool:
-  vmImage: 'macOS 10.13'
+- job: macOS HighSierra
 
-steps:
-  - bash: |
-      sudo rm -rf /Applications/Xcode.app /Library/Developer/CommandLineTools
-      sudo pkgutil --forget com.apple.pkg.CLTools_Executables
-      sudo xcode-select --reset
-      ./install.sh
-      valet.sh
-    displayName: Tests
+  pool:
+    vmImage: 'macOS 10.13'
+
+  steps:
+    - bash: |
+        sudo rm -rf /Applications/Xcode.app /Library/Developer/CommandLineTools
+        sudo pkgutil --forget com.apple.pkg.CLTools_Executables
+        sudo xcode-select --reset
+      displayName: Prepare
+    - bash: |
+        ./install.sh
+        valet.sh
+      displayName: Test Installation
+      failOnStderr: true
+
+- job: macOS Mojave
+
+  pool:
+    vmImage: 'macOS 10.14'
+
+  steps:
+    - bash: |
+        sudo rm -rf /Applications/Xcode.app /Library/Developer/CommandLineTools
+        sudo pkgutil --forget com.apple.pkg.CLTools_Executables
+        sudo xcode-select --reset
+      displayName: Prepare
+    - bash: |
+        ./install.sh
+        valet.sh
+      displayName: Test Installation
+      failOnStderr: true
