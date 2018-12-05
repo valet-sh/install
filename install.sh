@@ -79,7 +79,7 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     done
     echo "Installing dependencies"
     # install python dependencies via pip
-    sudo pip install -Iq -r requirements.txt &> /dev/null
+    sudo pip install -Iq -r "${VSH_REPO_DIR}/requirements.txt" &> /dev/null
     # create or override old symlink to prefix bin directory
     sudo ln -sf "${VSH_REPO_DIR}/valet.sh" "${VSH_PREFIX}/bin/"
     # output log
