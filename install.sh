@@ -23,8 +23,10 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     echo "Installing python3-pip and git"
     sudo apt-get update
     sudo apt-get install -y python3-pip git
+    # update pip
+    python -m pip install --upgrade pip
     # define env vars for next steps
-    VSH_PIP_BIN="pip3"
+    VSH_PIP_BIN="pip"
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     # if git command is not available, install CLT
