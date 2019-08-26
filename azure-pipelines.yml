@@ -1,5 +1,5 @@
 jobs:
-- job: ubuntu-18.04
+- job: ubuntu_18_04
   pool:
     vmImage: 'ubuntu-18.04'
   steps:
@@ -9,7 +9,7 @@ jobs:
     displayName: Test Installation
     failOnStderr: true
 
-- job: macOS-10.13
+- job: macOS_10_13
   pool:
     vmImage: 'macOS-10.13'
   steps:
@@ -24,7 +24,7 @@ jobs:
     displayName: Test Installation
     failOnStderr: true
 
-- job: macOS-10.14
+- job: macOS_10_14
   pool:
     vmImage: 'macOS-10.14'
   steps:
