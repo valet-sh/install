@@ -83,7 +83,7 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     # fetch all tags from application git repo
     git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" fetch --tags --quiet
     # get available git tags sorted by refname
-    GIT_TAGS=$(git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" tag --sort "-v:refname" )
+    GIT_TAGS=$(git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" tag --sort "-v:refname" | grep "${OSTYPE}")
     # get latest semver conform git version tag
     for GIT_TAG in ${GIT_TAGS}; do
         # validate tag to be semver compliant
@@ -96,8 +96,6 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     echo "Installing dependencies"
     # install python dependencies via pip
     sudo "${VSH_PIP_BIN}" install -Iq -r "${VSH_REPO_DIR}/requirements.txt" &> /dev/null
-    # create or override old symlink to prefix bin directory
-    sudo ln -sf "${VSH_REPO_DIR}/valet.sh" "/usr/local/bin/"
     # output log
     echo "Successfully installed version ${GIT_TAG}"
 else
