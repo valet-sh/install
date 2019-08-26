@@ -8,7 +8,7 @@ jobs:
     displayName: Test Installation
   - bash: |
       valet.sh
-      displayName: Test Execution
+    displayName: Test Execution
     failOnStderr: true
 #
 #- job: macOS_10_13
