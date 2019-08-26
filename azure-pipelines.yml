@@ -4,8 +4,8 @@ jobs:
     vmImage: 'ubuntu-latest'
   steps:
   - bash: |
-      pip install --upgrade pip
-      pip install --upgrade setuptools
+      pip3 install --upgrade pip
+      pip3 install --upgrade setuptools
       ./install.sh
     displayName: Test Installation
   - bash: |
