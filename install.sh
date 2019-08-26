@@ -21,12 +21,10 @@ VSH_REPO_DIR="${VSH_INSTALL_DIR}/${VSH_GITHUB_REPO_NAME}"
 # check if linux or macOS
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     echo "Installing python3-pip and git"
-    sudo apt-get update
-    sudo apt-get install -y python3-pip git
-    # update pip
-    python -m pip install --upgrade pip
+    sudo apt-get update &> /dev/null
+    sudo apt-get install -y python3-pip git &> /dev/null
     # define env vars for next steps
-    VSH_PIP_BIN="pip"
+    VSH_PIP_BIN="pip3"
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     # if git command is not available, install CLT
@@ -99,7 +97,7 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     echo "Installing dependencies"
     # install python dependencies via pip
     # sudo "${VSH_PIP_BIN}" install -Iq -r "${VSH_REPO_DIR}/requirements.txt" &> /dev/null
-    ${VSH_PIP_BIN}" install -Iq -r "${VSH_REPO_DIR}/requirements.txt
+    "${VSH_PIP_BIN}" install -Iq -r "${VSH_REPO_DIR}"/requirements.txt
     # output log
     echo "Successfully installed version ${GIT_TAG}"
 else
