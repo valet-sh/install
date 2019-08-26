@@ -5,6 +5,7 @@ jobs:
   steps:
   - bash: |
       ./install.sh
+      source ~/.profile
       valet.sh
     displayName: Test Installation
     failOnStderr: true
