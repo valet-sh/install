@@ -5,37 +5,38 @@ jobs:
   steps:
   - bash: |
       ./install.sh
-      source ~/.profile
-      valet.sh
     displayName: Test Installation
-    failOnStderr: true
-
-- job: macOS_10_13
-  pool:
-    vmImage: 'macOS-10.13'
-  steps:
   - bash: |
-      sudo rm -rf /Applications/Xcode.app /Library/Developer/CommandLineTools
-      sudo pkgutil --forget com.apple.pkg.CLTools_Executables
-      sudo xcode-select --reset
-    displayName: Prepare
-  - bash: |
-      ./install.sh
       valet.sh
-    displayName: Test Installation
+      displayName: Test Execution
     failOnStderr: true
-
-- job: macOS_10_14
-  pool:
-    vmImage: 'macOS-10.14'
-  steps:
-  - bash: |
-      sudo rm -rf /Applications/Xcode.app /Library/Developer/CommandLineTools
-      sudo pkgutil --forget com.apple.pkg.CLTools_Executables
-      sudo xcode-select --reset
-    displayName: Prepare
-  - bash: |
-      ./install.sh
-      valet.sh
-    displayName: Test Installation
-    failOnStderr: true
+#
+#- job: macOS_10_13
+#  pool:
+#    vmImage: 'macOS-10.13'
+#  steps:
+#  - bash: |
+#      sudo rm -rf /Applications/Xcode.app /Library/Developer/CommandLineTools
+#      sudo pkgutil --forget com.apple.pkg.CLTools_Executables
+#      sudo xcode-select --reset
+#    displayName: Prepare
+#  - bash: |
+#      ./install.sh
+#      valet.sh
+#    displayName: Test Installation
+#    failOnStderr: true
+#
+#- job: macOS_10_14
+#  pool:
+#    vmImage: 'macOS-10.14'
+#  steps:
+#  - bash: |
+#      sudo rm -rf /Applications/Xcode.app /Library/Developer/CommandLineTools
+#      sudo pkgutil --forget com.apple.pkg.CLTools_Executables
+#      sudo xcode-select --reset
+#    displayName: Prepare
+#  - bash: |
+#      ./install.sh
+#      valet.sh
+#    displayName: Test Installation
+#    failOnStderr: true
