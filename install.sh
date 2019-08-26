@@ -95,7 +95,8 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     done
     echo "Installing dependencies"
     # install python dependencies via pip
-    sudo "${VSH_PIP_BIN}" install -Iq -r "${VSH_REPO_DIR}/requirements.txt" &> /dev/null
+    # sudo "${VSH_PIP_BIN}" install -Iq -r "${VSH_REPO_DIR}/requirements.txt" &> /dev/null
+    ${VSH_PIP_BIN}" install -Iq -r "${VSH_REPO_DIR}/requirements.txt
     # output log
     echo "Successfully installed version ${GIT_TAG}"
 else
