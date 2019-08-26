@@ -1,7 +1,7 @@
 jobs:
-- job: ubuntu_18_04
+- job: ubuntu_latest
   pool:
-    vmImage: 'ubuntu-18.04'
+    vmImage: 'ubuntu-latest'
   steps:
   - bash: |
       ./install.sh
