@@ -22,7 +22,7 @@ VSH_REPO_DIR="${VSH_INSTALL_DIR}/${VSH_GITHUB_REPO_NAME}"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     echo "Installing python3-pip and git"
     sudo apt-get update &> /dev/null
-    sudo apt-get install -y python3-pip git &> /dev/null
+    sudo apt-get install -y python3-pip python3-setuptools git &> /dev/null
 
     # define env vars for next steps
     VSH_PIP_BIN="pip3"

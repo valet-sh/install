@@ -1,14 +1,13 @@
 language: bash
 
 matrix:
-
   include:
-
     - os: linux
       dist: bionic
-
-before_script:
-  - sudo pip install --upgrade setuptools
+    - os: osx
+      osx_image: xcode11
+    - os: osx
+      osx_image: xcode9.4
 
 script:
   - ./install.sh
