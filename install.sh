@@ -11,7 +11,7 @@
 set -e
 
 # define variables
-VSH_PREFIX="/usr/share"
+VSH_PREFIX="/usr/local"
 VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="valet-sh"}
 VSH_GITHUB_REPO_NAME=${VSH_GITHUB_REPO_NAME:="valet-sh"}
 VSH_GITHUB_REPO_URL=${VSH_GITHUB_REPO_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_REPO_NAME}"}
@@ -71,8 +71,6 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     # cleanup old installations (< version 1.0.0-alpha10)
     rm -rf "${HOME}/.valet.sh"
     rm -rf "${HOME}/.valet-sh"
-    # cleanup old installations (< version 1.0.0-alpha12)
-    sudo rm -rf "/usr/local/valet-sh"
     # create install dir if it does not exist
     if [ ! -d "${VSH_INSTALL_DIR}" ]; then
         sudo mkdir "${VSH_INSTALL_DIR}"
