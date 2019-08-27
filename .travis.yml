@@ -8,8 +8,8 @@ matrix:
       dist: bionic
 
 before_script:
-  - pip install --upgrade setuptools
-  - pip3 install --upgrade setuptools
+  - sudo pip install --upgrade setuptools
+  - sudo pip3 install --upgrade setuptools
 
 script:
   - ./install.sh
