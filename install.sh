@@ -23,6 +23,9 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     echo "Installing python3-pip and git"
     sudo apt-get update &> /dev/null
     sudo apt-get install -y python3-pip git &> /dev/null
+
+    sudo pip3 install setuptools
+
     # define env vars for next steps
     VSH_PIP_BIN="pip3"
 
