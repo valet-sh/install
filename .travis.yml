@@ -7,6 +7,9 @@ matrix:
     - os: linux
       dist: bionic
 
+before_script:
+  - sudo pip install --upgrade setuptools
+
 script:
   - ./install.sh
   - valet.sh
