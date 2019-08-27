@@ -1,0 +1,11 @@
+language: bash
+
+matrix:
+
+  include:
+
+    - os: linux
+      dist: bionic
+
+  script:
+    - ./install.sh
