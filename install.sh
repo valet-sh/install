@@ -26,6 +26,9 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 
     # define env vars for next steps
     VSH_PIP_BIN="pip3"
+    VSH_USER=${USER}
+    VSH_GROUP=${VSH_USER}
+
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     # if git command is not available, install CLT
@@ -61,6 +64,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 
     # define env vars for next steps
     VSH_PIP_BIN="pip"
+    VSH_USER=${USER}
+    VSH_GROUP="admin"
 fi
 
 # check if valet-sh is installed
@@ -77,7 +82,7 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     fi
     # set correct permissions
     sudo chmod 775 "${VSH_INSTALL_DIR}"
-    sudo chown "${USER}":"${USER}" "${VSH_INSTALL_DIR}"
+    sudo chown "${VSH_USER}":"${VSH_GROUP}" "${VSH_INSTALL_DIR}"
     # install by cloning git repo to install dir
     git clone --quiet "${VSH_GITHUB_REPO_URL}" "${VSH_REPO_DIR}"
     # fetch all tags from application git repo
