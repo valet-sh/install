@@ -4,6 +4,12 @@ matrix:
   include:
     - os: linux
       dist: bionic
+      apt:
+        packages:
+          - shellcheck
+        update: true
+      script:
+        - shellcheck install.sh
     - os: osx
       osx_image: xcode11
     - os: osx
