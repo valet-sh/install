@@ -7,6 +7,10 @@ matrix:
     - os: linux
       dist: bionic
 
+before_script:
+  - pip install --upgrade setuptools
+  - pip3 install --upgrade setuptools
+
 script:
   - ./install.sh
 
