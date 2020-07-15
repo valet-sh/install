@@ -102,7 +102,7 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     done
     echo "Installing dependencies"
     # install python dependencies via pip
-    ${VSH_PIP_BIN} install -q -r ${VSH_REPO_DIR}/requirements.txt
+    ${VSH_PIP_BIN} install -q -r ${VSH_REPO_DIR}/requirements.txt > /dev/null 2>&1
     # output log
     echo "Successfully installed version ${GIT_TAG}"
 else
