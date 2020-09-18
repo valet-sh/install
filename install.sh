@@ -107,7 +107,7 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     ${VSH_PIP_BIN} install -q -r ${VSH_REPO_DIR}/requirements.txt > /dev/null 2>&1
     # create symlink for instant access
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        ln -s "${HOME}/.local/bin/valet.sh" "/usr/local/bin/valet.sh"
+        sudo ln -s "${HOME}/.local/bin/valet.sh" "/usr/local/bin/valet.sh"
     fi
     # output log
     echo "Successfully installed version ${GIT_TAG}"
