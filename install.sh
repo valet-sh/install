@@ -27,7 +27,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     sudo apt-get install -y python3-pip python3-setuptools git &> /dev/null
 
     # define env vars for next steps
-    VSH_PIP_BIN="pip3"
+    VSH_PIP_BIN="sudo pip3"
     VSH_USER=${USER}
     VSH_GROUP=${VSH_USER}
 
@@ -105,10 +105,6 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     echo "Installing dependencies"
     # install python dependencies via pip
     ${VSH_PIP_BIN} install -q -r ${VSH_REPO_DIR}/requirements.txt > /dev/null 2>&1
-    # create symlink for instant access
-    if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        sudo ln -s "${HOME}/.local/bin/valet.sh" "/usr/local/bin/valet.sh"
-    fi
     # output log
     echo "Successfully installed version ${GIT_TAG}"
 else
