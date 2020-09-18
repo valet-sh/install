@@ -17,6 +17,8 @@ VSH_GITHUB_REPO_NAME=${VSH_GITHUB_REPO_NAME:="valet-sh"}
 VSH_GITHUB_REPO_URL=${VSH_GITHUB_REPO_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_REPO_NAME}"}
 VSH_INSTALL_DIR="${VSH_PREFIX}/${VSH_GITHUB_REPO_NAMESPACE}"
 VSH_REPO_DIR="${VSH_INSTALL_DIR}/${VSH_GITHUB_REPO_NAME}"
+# semver validator regex
+SEMVER_REGEX='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\-!?[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
 
 # check if linux or macOS
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -94,7 +96,7 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     # get latest semver conform git version tag
     for GIT_TAG in ${GIT_TAGS}; do
         # validate tag to be semver compliant
-        if [[ "${GIT_TAG}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+        if [[ "${GIT_TAG}" =~ ${SEMVER_REGEX} ]]; then
             # checkout latest semver compliant git tag
             git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" checkout --force --quiet "${GIT_TAG}"
             break
