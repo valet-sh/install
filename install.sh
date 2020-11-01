@@ -70,15 +70,9 @@ fi
 # check if valet-sh is installed
 if [ ! -d "${VSH_REPO_DIR}" ]; then
     echo "Installing valet-sh"
-    APPLICATION_OSTYPE=""
-    # define os specific filter only for macos till unirelease is ready
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        APPLICATION_OSTYPE="darwin"
-    fi
     # retrigger sudo
     sudo true
     # cleanup old installations (< version 1.0.0-alpha10)
-    rm -rf "${HOME}/.valet.sh"
     rm -rf "${HOME}/.valet-sh"
     # create install dir if it does not exist
     if [ ! -d "${VSH_INSTALL_DIR}" ]; then
@@ -92,7 +86,7 @@ if [ ! -d "${VSH_REPO_DIR}" ]; then
     # fetch all tags from application git repo
     git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" fetch --tags --quiet
     # get available git tags sorted by refname
-    GIT_TAGS=$(git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" tag --sort "-v:refname" | grep "${APPLICATION_OSTYPE}")
+    GIT_TAGS=$(git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" tag --sort "-v:refname")
     # get latest semver conform git version tag
     for GIT_TAG in ${GIT_TAGS}; do
         # validate tag to be semver compliant
