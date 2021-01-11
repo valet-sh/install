@@ -57,3 +57,13 @@ function install_dependencies() {
     # deactivate valet.sh venv
     deactivate
 }
+
+##############################################################################
+# (re)sets symlink to cli command
+##############################################################################
+function install_link() {
+    VENV_DIR="${1}"
+    # (re)set system-wide symlink to be in path
+    sudo ln -sf "${VENV_DIR}/bin/valet.sh" "/usr/local/bin/valet.sh"
+}
+
