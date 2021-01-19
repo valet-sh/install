@@ -53,7 +53,11 @@ function install_dependencies() {
     # install python dependencies via pip3
     pip3 install setuptools wheel
     pip3 install -r ${REPO_DIR}/requirements.txt
-    ANSIBLE_COLLECTIONS_PATHS="${REPO_DIR}/collections" ansible-galaxy collection install -r "${REPO_DIR}/requirements.yml" -p "${REPO_DIR}/collections"
+    # check if there is a requirements.yml in repo dir
+    if [ -f "${REPO_DIR}/requirements.yml" ]; then
+        # install collections based on requirements.yml file in repo dir
+        ANSIBLE_COLLECTIONS_PATHS="${REPO_DIR}/collections" ansible-galaxy collection install -r "${REPO_DIR}/requirements.yml" -p "${REPO_DIR}/collections"
+    fi
     # deactivate valet.sh venv
     deactivate
 }
