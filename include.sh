@@ -46,13 +46,13 @@ function install_dependencies() {
     # clone if repo dir is not set yet
     if [[ ! -d "${VENV_DIR}" ]]; then
         # (re)create venv if it does not exist
-        python3 -m venv "${VENV_DIR}"
+        python3 -m venv --system-site-packages "${VENV_DIR}"
     fi
     # activate valet.sh venv
     source "${VENV_DIR}/bin/activate"
     # install python dependencies via pip3
-    pip3 install setuptools wheel
-    pip3 install -r ${REPO_DIR}/requirements.txt
+    pip3 install -I setuptools wheel
+    pip3 install -I -r ${REPO_DIR}/requirements.txt
     # check if there is a requirements.yml in repo dir
     if [ -f "${REPO_DIR}/requirements.yml" ]; then
         # install collections based on requirements.yml file in repo dir
