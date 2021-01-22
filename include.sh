@@ -38,6 +38,14 @@ function install_upgrade() {
 }
 
 ##############################################################################
+# migration scripts
+##############################################################################
+function install_migration() {
+    # deinstall user systemwide installation of valet-sh-cli
+    pip3 uninstall -y valet-sh-cli &> /dev/null || true
+}
+
+##############################################################################
 # install dependencies
 ##############################################################################
 function install_dependencies() {
@@ -45,6 +53,9 @@ function install_dependencies() {
     REPO_DIR="${2}"
     PIP_INSTALL_OPTS=""
     VENV_CREATE_OPTS=""
+
+    # call possible migration
+    install_migration
 
     # check if there is linux and modify command opts
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
