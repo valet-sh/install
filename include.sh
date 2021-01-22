@@ -43,16 +43,25 @@ function install_upgrade() {
 function install_dependencies() {
     VENV_DIR="${1}"
     REPO_DIR="${2}"
+    PIP_INSTALL_OPTS=""
+    VENV_CREATE_OPTS=""
+
+    # check if there is linux and modify command opts
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        PIP_INSTALL_OPTS="-I"
+        VENV_CREATE_OPTS="--system-site-packages"
+    fi
+
     # clone if repo dir is not set yet
     if [[ ! -d "${VENV_DIR}" ]]; then
         # (re)create venv if it does not exist
-        python3 -m venv --system-site-packages "${VENV_DIR}"
+        python3 -m venv "${VENV_CREATE_OPTS}" "${VENV_DIR}"
     fi
     # activate valet.sh venv
     source "${VENV_DIR}/bin/activate"
     # install python dependencies via pip3
-    pip3 install -I setuptools wheel
-    pip3 install -I -r ${REPO_DIR}/requirements.txt
+    pip3 install ${PIP_INSTALL_OPTS} setuptools wheel
+    pip3 install ${PIP_INSTALL_OPTS} -r ${REPO_DIR}/requirements.txt
     # check if there is a requirements.yml in repo dir
     if [ -f "${REPO_DIR}/requirements.yml" ]; then
         # install collections based on requirements.yml file in repo dir
