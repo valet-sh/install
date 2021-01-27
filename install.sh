@@ -17,6 +17,7 @@ VSH_GITHUB_REPO_NAME=${VSH_GITHUB_REPO_NAME:="valet-sh"}
 VSH_GITHUB_REPO_URL=${VSH_GITHUB_REPO_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_REPO_NAME}"}
 VSH_INSTALL_DIR="${VSH_PREFIX}/${VSH_GITHUB_REPO_NAMESPACE}"
 VSH_REPO_DIR="${VSH_INSTALL_DIR}/${VSH_GITHUB_REPO_NAME}"
+VSH_PIP_BIN="sudo pip3"
 # semver validator regex
 SEMVER_REGEX='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\-!?[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
 
@@ -27,7 +28,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     sudo apt-get install -y python3-pip python3-setuptools git &> /dev/null
 
     # define env vars for next steps
-    VSH_PIP_BIN="sudo pip3"
     VSH_USER=${USER}
     VSH_GROUP=${VSH_USER}
 
@@ -62,7 +62,6 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     fi
 
     # define env vars for next steps
-    VSH_PIP_BIN="sudo pip"
     VSH_USER=${USER}
     VSH_GROUP="admin"
 fi
