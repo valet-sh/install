@@ -24,11 +24,12 @@ VSH_VENV_DIR="${VSH_INSTALL_DIR}/venv"
 VSH_USER=${USER}
 
 # include external vars and functions
+# shellcheck source=/dev/stdin
 source /dev/stdin <<< "$( curl -sS ${VSH_INCLUDE_URL} )"
 
 # define stdout print function
 out () {
-    printf "\033[0;32m⠹ \033[;1m${VSH_NAME}\033[0;0m | ${1}\n"
+    printf "\033[0;32m⠹ \033[;1m%s\033[0;0m | %s\n" "${VSH_NAME}" "${1}"
 }
 
 out "install"
