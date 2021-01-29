@@ -53,9 +53,6 @@ function install_dependencies() {
     REPO_DIR="${2}"
     PIP_INSTALL_OPTS=""
     VENV_CREATE_OPTS=""
-    
-    echo $VENV_DIR
-    echo $REPO_DIR
 
     # call possible migration
     install_migration
@@ -69,7 +66,7 @@ function install_dependencies() {
     # clone if repo dir is not set yet
     if [[ ! -d "${VENV_DIR}" ]]; then
         # (re)create venv if it does not exist
-        python3 -m venv "${VENV_CREATE_OPTS}" "${VENV_DIR}"
+        python3 -m venv ${VENV_CREATE_OPTS} ${VENV_DIR}
     fi
     # activate valet.sh venv
     source "${VENV_DIR}/bin/activate"
