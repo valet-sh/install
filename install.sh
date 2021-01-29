@@ -3,7 +3,7 @@
 ################################################################################
 # valet.sh (un)installer
 #
-# Copyright: (C) 2018 TechDivision GmbH - All Rights Reserved
+# Copyright: (C) 2021 TechDivision GmbH - All Rights Reserved
 # Author: Johann Zelger <j.zelger@techdivision.com>
 ################################################################################
 
@@ -11,95 +11,87 @@
 set -e
 
 # define variables
+VSH_NAME="valet.sh"
+VSH_URL="https://valet.sh"
 VSH_PREFIX="/usr/local"
 VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="valet-sh"}
 VSH_GITHUB_REPO_NAME=${VSH_GITHUB_REPO_NAME:="valet-sh"}
 VSH_GITHUB_REPO_URL=${VSH_GITHUB_REPO_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_REPO_NAME}"}
+VSH_INCLUDE_URL=${VSH_INCLUDE_URL:="https://raw.githubusercontent.com/${VSH_GITHUB_REPO_NAMESPACE}/install/master/include.sh"}
 VSH_INSTALL_DIR="${VSH_PREFIX}/${VSH_GITHUB_REPO_NAMESPACE}"
 VSH_REPO_DIR="${VSH_INSTALL_DIR}/${VSH_GITHUB_REPO_NAME}"
-VSH_PIP_BIN="sudo pip3"
-# semver validator regex
-SEMVER_REGEX='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\-!?[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
+VSH_VENV_DIR="${VSH_INSTALL_DIR}/venv"
+VSH_USER=${USER}
 
-# check if linux or macOS
+# include external vars and functions
+source /dev/stdin <<< "$( curl -sS ${VSH_INCLUDE_URL} )"
+
+# define stdout print function
+out () {
+    printf "\033[0;32m⠹ \033[;1m${VSH_NAME}\033[0;0m | ${1}\n"
+}
+
+out "install"
+
+# trigger password promt
+sudo true
+
+# if linux
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    echo "Installing python3-pip and git"
-    sudo apt-get update &> /dev/null
-    sudo apt-get install -y python3-pip python3-setuptools git &> /dev/null
-
-    # define env vars for next steps
-    VSH_USER=${USER}
+    # update apt package index files
+    sudo apt -y update && sudo apt -y install git python3 python3-venv
     VSH_GROUP=${VSH_USER}
+fi
 
-
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "Check Command Line Tools"
-    # if git command is not available, install CLT
-    if [ ! -f /Library/Developer/CommandLineTools/usr/bin/git ]; then    
-        # create macOS flag file, that CLT can be installed on demand
-        sudo touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-        # parse CLT software name
-        SOFTWARE_CLT_NAME=$(bash -c "/usr/sbin/softwareupdate -l | 
-            grep -B 1 -E 'Command Line Tools' |
-            awk -F'*' '/^ *\\*/ {print \$2}' |
-            sed -e 's/^ *Label: //' -e 's/^ *//' |
-            sort -V |
-            tail -n1")
-        echo "Installing ${SOFTWARE_CLT_NAME}"
-        # install CLT
-        softwareupdate -i "${SOFTWARE_CLT_NAME}" &> /dev/null
-        # cleanup
-        sudo rm -rf /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-    fi
-
-    # check if pip is available
-    if [ ! -x "$(command -v pip)" ]; then
-        # retrigger sudo
-        sudo true
-        echo "Installing pip"
-        # install pip
-        sudo easy_install pip &> /dev/null
-    fi
-
-    # define env vars for next steps
-    VSH_USER=${USER}
+# if MacOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # check if brew is installed
+    if ! command -v brew &> /dev/null
+        then
+            out "brew could not be found. Installing..."
+            yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            # init brew services by calling it for the first time
+            brew services list &> /dev/null
+        fi
+    # check if python3 is installed
+    if ! command -v python3 &> /dev/null
+        then
+            out "python3 could not be found. Installing..."
+            brew install python3
+        fi
     VSH_GROUP="admin"
 fi
 
-# check if valet-sh is installed
-if [ ! -d "${VSH_REPO_DIR}" ]; then
-    echo "Installing valet-sh"
-    # retrigger sudo
-    sudo true
-    # cleanup old installations (< version 1.0.0-alpha10)
-    rm -rf "${HOME}/.valet-sh"
-    # create install dir if it does not exist
-    if [ ! -d "${VSH_INSTALL_DIR}" ]; then
-        sudo mkdir "${VSH_INSTALL_DIR}"
-    fi
-    # set correct permissions
-    sudo chmod 775 "${VSH_INSTALL_DIR}"
-    sudo chown "${VSH_USER}":"${VSH_GROUP}" "${VSH_INSTALL_DIR}"
-    # install by cloning git repo to install dir
-    git clone --quiet "${VSH_GITHUB_REPO_URL}" "${VSH_REPO_DIR}"
-    # fetch all tags from application git repo
-    git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" fetch --tags --quiet
-    # get available git tags sorted by refname
-    GIT_TAGS=$(git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" tag --sort "-v:refname")
-    # get latest semver conform git version tag
-    for GIT_TAG in ${GIT_TAGS}; do
-        # validate tag to be semver compliant
-        if [[ "${GIT_TAG}" =~ ${SEMVER_REGEX} ]]; then
-            # checkout latest semver compliant git tag
-            git --git-dir="${VSH_REPO_DIR}/.git" --work-tree="${VSH_REPO_DIR}" checkout --force --quiet "${GIT_TAG}"
-            break
-        fi
-    done
-    echo "Installing dependencies"
-    # install python dependencies via pip
-    ${VSH_PIP_BIN} install -q -r ${VSH_REPO_DIR}/requirements.txt > /dev/null 2>&1
-    # output log
-    echo "Successfully installed version ${GIT_TAG}"
-else
-    echo "Already installed"
+# create install base dir if it does not exist
+if [ ! -d "${VSH_INSTALL_DIR}" ]; then
+    sudo mkdir "${VSH_INSTALL_DIR}"
 fi
+# reset correct permissions
+sudo chmod 775 "${VSH_INSTALL_DIR}"
+sudo chown "${VSH_USER}":"${VSH_GROUP}" "${VSH_INSTALL_DIR}"
+
+# mv repo dir to tmp folder if exists deleting it after installation
+mv "${VSH_REPO_DIR}" "/tmp/${VSH_GITHUB_REPO_NAME}" &> /dev/null || true
+# install application
+install_upgrade "${VSH_GITHUB_REPO_URL}" "${VSH_REPO_DIR}"
+
+# mv venv to tmp folder if exists deleting it after installation
+mv ${VSH_VENV_DIR} "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &> /dev/null || true
+# install dependencies in venv
+install_dependencies "${VSH_VENV_DIR}" "${VSH_REPO_DIR}"
+
+# (re)set system-wide symlink to be in path
+install_link "${VSH_VENV_DIR}"
+
+# cleanup
+rm -rf "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &> /dev/null || true
+rm -rf "/tmp/${VSH_GITHUB_REPO_NAME}" &> /dev/null || true
+
+# output status
+echo ""
+echo ""
+out "successfully installed ${VSH_NAME} version ${GIT_TAG}"
+echo ""
+echo -e "- Run '${VSH_NAME}' to get started"
+echo -e "- Further documentation: ${VSH_URL}"
+echo ""
