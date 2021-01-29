@@ -53,6 +53,9 @@ function install_dependencies() {
     REPO_DIR="${2}"
     PIP_INSTALL_OPTS=""
     VENV_CREATE_OPTS=""
+    
+    echo $VENV_DIR
+    echo $REPO_DIR
 
     # call possible migration
     install_migration
