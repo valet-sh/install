@@ -11,15 +11,21 @@ matrix:
       script:
         - shellcheck install.sh
         - shellcheck include.sh
+    - os: linux
+      dist: bionic
+      script:
         - bash -x ./install.sh
         - valet.sh
+        - valet.sh install
     - os: osx
       osx_image: xcode12.2
       script:
         - bash -x ./install.sh
         - valet.sh
+        - valet.sh install
     - os: osx
       osx_image: xcode11.6
       script:
         - bash -x ./install.sh
         - valet.sh
+        - valet.sh install
