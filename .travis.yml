@@ -10,6 +10,7 @@ matrix:
         update: true
       script:
         - shellcheck install.sh
+        - shellcheck include.sh
         - bash -x ./install.sh
         - valet.sh
     - os: osx
