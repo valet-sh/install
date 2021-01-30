@@ -24,7 +24,7 @@ VSH_VENV_DIR="${VSH_INSTALL_DIR}/venv"
 VSH_USER=${USER}
 
 # include external vars and functions
-# shellcheck source=/dev/stdin
+# shellcheck disable=SC1091
 source /dev/stdin <<< "$( curl -sS ${VSH_INCLUDE_URL} )"
 
 # define stdout print function
