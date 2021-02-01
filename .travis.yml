@@ -16,16 +16,13 @@ matrix:
       script:
         - bash -x ./install.sh
         - valet.sh
-        - echo | travis_wait valet.sh -d install
     - os: osx
       osx_image: xcode12.2
       script:
         - bash -x ./install.sh
         - valet.sh
-        - echo | travis_wait valet.sh -d install
     - os: osx
       osx_image: xcode11.6
       script:
         - bash -x ./install.sh
         - valet.sh
-        - echo | travis_wait valet.sh -d install
