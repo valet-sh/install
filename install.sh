@@ -40,7 +40,7 @@ sudo true
 # if linux
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     # update apt package index files
-    sudo apt -y update && sudo apt -y install git python3 python3-venv
+    sudo apt update && sudo apt -y install git python3 python3-venv
     VSH_GROUP=${VSH_USER}
 fi
 
