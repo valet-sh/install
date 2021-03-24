@@ -51,9 +51,10 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         then
             out "brew could not be found. Installing..."
             yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            # init brew services by calling it for the first time
-            brew services list &> /dev/null
         fi
+    # init brew services by calling it
+    brew services list &> /dev/null
+    
     # check if python3 is installed
     if ! command -v python3 &> /dev/null
         then
