@@ -51,6 +51,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         then
             out "brew could not be found. Installing..."
             yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            brew install openssl rust
+            export CPPFLAGS=-I/usr/local/opt/openssl/include
+            export LDFLAGS=-L/usr/local/opt/openssl/lib
         fi
     # init brew services by calling it
     brew services list &> /dev/null
