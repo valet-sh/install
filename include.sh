@@ -74,7 +74,7 @@ function install_dependencies() {
     # shellcheck source=/dev/null
     source "${VENV_DIR}/bin/activate"
     # install python dependencies via pip3
-    pip3 install ${PIP_INSTALL_OPTS} setuptools wheel
+    pip3 install ${PIP_INSTALL_OPTS} setuptools setuptools_rust wheel
     pip3 install ${PIP_INSTALL_OPTS} -r "${REPO_DIR}/requirements.txt"
     # check if there is a requirements.yml in repo dir
     if [ -f "${REPO_DIR}/requirements.yml" ]; then
