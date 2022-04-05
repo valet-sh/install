@@ -1,6 +1,6 @@
 # valet-sh (un)installer
 
-[![Build Status](https://travis-ci.org/valet-sh/install.svg?branch=master)](https://travis-ci.org/valet-sh/install)
+[![Build Status](https://github.com/valet-sh/install/actions/workflows/build.yml/badge.svg)](https://github.com/valet-sh/install/actions/workflows/build.yml)
 
 ## Install valet-sh
 
