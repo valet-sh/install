@@ -17,7 +17,7 @@ VSH_PREFIX="/usr/local"
 VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="valet-sh"}
 VSH_GITHUB_REPO_NAME=${VSH_GITHUB_REPO_NAME:="valet-sh"}
 VSH_GITHUB_REPO_URL=${VSH_GITHUB_REPO_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_REPO_NAME}"}
-VSH_INCLUDE_URL=${VSH_INCLUDE_URL:="https://raw.githubusercontent.com/${VSH_GITHUB_REPO_NAMESPACE}/install/master/include.sh"}
+VSH_INCLUDE_URL=${VSH_INCLUDE_URL:="https://raw.githubusercontent.com/${VSH_GITHUB_REPO_NAMESPACE}/install/develop/include.sh"}
 VSH_INSTALL_DIR="${VSH_PREFIX}/${VSH_GITHUB_REPO_NAMESPACE}"
 VSH_REPO_DIR="${VSH_INSTALL_DIR}/${VSH_GITHUB_REPO_NAME}"
 VSH_VENV_DIR="${VSH_INSTALL_DIR}/venv"
@@ -51,10 +51,12 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         then
             out "brew could not be found. Installing..."
             yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            brew install openssl rust python3
             export CPPFLAGS=-I/usr/local/opt/openssl/include
             export LDFLAGS=-L/usr/local/opt/openssl/lib
         fi
+
+    brew install openssl@3.10 rust python3
+
     # init brew services by calling it
     brew services list &> /dev/null
     
