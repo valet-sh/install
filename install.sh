@@ -55,17 +55,10 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
             export LDFLAGS=-L/usr/local/opt/openssl/lib
         fi
 
-    brew install openssl@3.10 rust python3
+    brew install openssl rust python@3.10
 
     # init brew services by calling it
-    brew services list &> /dev/null
-    
-    # check if python3 is installed
-    if ! command -v python3 &> /dev/null
-        then
-            out "python3 could not be found. Installing..."
-            brew install python3
-        fi
+    brew services list &> /dev/null    
     VSH_GROUP="admin"
 fi
 
