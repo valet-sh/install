@@ -63,12 +63,18 @@ function install_dependencies() {
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         PIP_INSTALL_OPTS="-I"
         VENV_CREATE_OPTS="--system-site-packages"
+        PYTHON3_BIN="/usr/bin/python3"
     fi
-
+    
+    # if MacOS
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        PYTHON3_BIN="/usr/local/opt/python@3.10/bin/python3.10"
+    fi
+    
     # clone if repo dir is not set yet
     if [[ ! -d "${VENV_DIR}" ]]; then
         # (re)create venv if it does not exist
-        python3 -m venv ${VENV_CREATE_OPTS} "${VENV_DIR}"
+        ${PYTHON3_BIN} -m venv ${VENV_CREATE_OPTS} "${VENV_DIR}"
     fi
     # activate valet.sh venv
     # shellcheck source=/dev/null
