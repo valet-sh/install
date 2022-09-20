@@ -51,6 +51,7 @@ function install_migration() {
 # install dependencies
 ##############################################################################
 function install_dependencies() {
+    ARCH=$(uname -m)
     VENV_DIR="${1}"
     REPO_DIR="${2}"
     PIP_INSTALL_OPTS=""
