@@ -65,10 +65,15 @@ function install_dependencies() {
         VENV_CREATE_OPTS="--system-site-packages"
         PYTHON3_BIN="/usr/bin/python3"
     fi
-    
+
     # if MacOS
     if [[ "$OSTYPE" == "darwin"* ]]; then
         PYTHON3_BIN="/usr/local/opt/python@3.10/bin/python3.10"
+    fi
+
+    # if MacOS on M1
+    if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
+        PYTHON3_BIN="/opt/homebrew/opt/python@3.10/bin/python3.10"
     fi
     
     # clone if repo dir is not set yet
