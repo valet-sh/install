@@ -35,8 +35,6 @@ function install_upgrade() {
             break
         fi
     done
-    # return used git tag
-    echo "Release ${GIT_TAG} cloned"
 }
 
 ##############################################################################
@@ -86,12 +84,12 @@ function install_dependencies() {
     source "${VENV_DIR}/bin/activate"
     # install python dependencies via pip3
     pip3 install ${PIP_INSTALL_OPTS} --upgrade setuptools==60.8.2 wheel==0.37.1 > ${VSH_INSTALL_LOG} 2>&1
-    echo "install ansible"
+    echo " - install ansible"
     pip3 install ${PIP_INSTALL_OPTS} -r "${REPO_DIR}/requirements.txt" > ${VSH_INSTALL_LOG} 2>&1
     # check if there is a requirements.yml in repo dir
     if [ -f "${REPO_DIR}/requirements.yml" ]; then
         # install collections based on requirements.yml file in repo dir
-        echo "install python dependencies"
+        echo " - install python dependencies"
         ANSIBLE_COLLECTIONS_PATHS="${REPO_DIR}/collections" ansible-galaxy collection install -r "${REPO_DIR}/requirements.yml" -p "${REPO_DIR}/collections" > ${VSH_INSTALL_LOG} 2>&1
     fi
     # deactivate valet.sh venv

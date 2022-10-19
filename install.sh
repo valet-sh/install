@@ -60,13 +60,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     # check if brew is installed
     if ! command -v ${HOMEBREW_PREFIX}/bin/brew &> /dev/null
         then
-            echo "brew could not be found. Installing..."
+            echo " - brew could not be found. Installing..."
             yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" > ${VSH_INSTALL_LOG} 2>&1
             export CPPFLAGS=-I${HOMEBREW_PREFIX}/opt/openssl/include
             export LDFLAGS=-L${HOMEBREW_PREFIX}/opt/openssl/lib
         fi
 
-    echo "install required brew packages"
+    echo " - install required brew packages"
     ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.10 > ${VSH_INSTALL_LOG} 2>&1
 
     # init brew services by calling it
