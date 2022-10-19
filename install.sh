@@ -66,7 +66,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
             export LDFLAGS=-L${HOMEBREW_PREFIX}/opt/openssl/lib
         fi
 
-    echo "installing required brew packages"
+    echo "install required brew packages"
     ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.10 > ${VSH_INSTALL_LOG} 2>&1
 
     # init brew services by calling it

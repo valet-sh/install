@@ -90,7 +90,7 @@ function install_dependencies() {
     # check if there is a requirements.yml in repo dir
     if [ -f "${REPO_DIR}/requirements.yml" ]; then
         # install collections based on requirements.yml file in repo dir
-        ANSIBLE_COLLECTIONS_PATHS="${REPO_DIR}/collections" ansible-galaxy collection install -r "${REPO_DIR}/requirements.yml" -p "${REPO_DIR}/collections"
+        ANSIBLE_COLLECTIONS_PATHS="${REPO_DIR}/collections" ansible-galaxy collection install -r "${REPO_DIR}/requirements.yml" -p "${REPO_DIR}/collections" > ${VSH_INSTALL_LOG} 2>&1
     fi
     # deactivate valet.sh venv
     deactivate
