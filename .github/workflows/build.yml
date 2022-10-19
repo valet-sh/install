@@ -1,6 +1,8 @@
 name: 'build'
 
 on:
+  schedule:
+    - cron: "30 4 * * 0"
   push:
     branches:
       - master
@@ -15,8 +17,22 @@ jobs:
       uses: ludeeus/action-shellcheck@master
       with:
         severity: error
-  ubuntu-install:
-    runs-on: ubuntu-latest
+  install-on-ubuntu-2004:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: script
+      run: bash ${GITHUB_WORKSPACE}/install.sh
+      shell: bash
+  install-on-ubuntu-2204:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: script
+      run: bash ${GITHUB_WORKSPACE}/install.sh
+      shell: bash
+  install-on-macos-11:
+    runs-on: macos-11
     steps:
     - uses: actions/checkout@v1
     - name: script
