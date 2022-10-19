@@ -35,13 +35,13 @@ out () {
     printf "\033[0;32m⠹ \033[;1m%s\033[0;0m | %s\n" "${VSH_NAME}" "${1}"
 }
 
+# trigger password promt
+sudo true
+
 out "install"
 echo ""
 echo "full install log: ${VSH_INSTALL_LOG}"
 echo ""
-
-# trigger password promt
-sudo true
 
 # if linux
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
