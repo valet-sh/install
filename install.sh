@@ -3,7 +3,7 @@
 ################################################################################
 # valet.sh (un)installer
 #
-# Copyright: (C) 2021 TechDivision GmbH - All Rights Reserved
+# Copyright: (C) 2022 TechDivision GmbH - All Rights Reserved
 # Author: Johann Zelger <j.zelger@techdivision.com>
 ################################################################################
 
@@ -44,10 +44,10 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     VSH_GROUP=${VSH_USER}
 fi
 
-# if MacOS
-if [[ "$OSTYPE" == "darwin"* ]]; then
+# if MacOS on Intel
+if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "x86"* ]]; then
     # check if brew is installed
-    if ! command -v brew &> /dev/null
+    if ! command -v /usr/local/bin/brew &> /dev/null
         then
             out "brew could not be found. Installing..."
             yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -55,12 +55,31 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
             export LDFLAGS=-L/usr/local/opt/openssl/lib
         fi
 
-    brew install openssl rust python@3.10
+    /usr/local/bin/brew install openssl rust python@3.10
 
     # init brew services by calling it
-    brew services list &> /dev/null    
+    /usr/local/bin/brew services list &> /dev/null
     VSH_GROUP="admin"
 fi
+
+# if MacOS on Intel
+if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
+    # check if brew is installed
+    if ! command -v /opt/homebrew/bin/brew &> /dev/null
+        then
+            out "brew could not be found. Installing..."
+            yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            export CPPFLAGS=-I/opt/homebrew/opt/openssl/include
+            export LDFLAGS=-L/opt/homebrew/opt/openssl/lib
+        fi
+
+    /opt/homebrew/bin/brew install openssl rust python@3.10
+
+    # init brew services by calling it
+    /opt/homebrew/bin/brew services list &> /dev/null
+    VSH_GROUP="admin"
+fi
+
 
 # create install base dir if it does not exist
 if [ ! -d "${VSH_INSTALL_DIR}" ]; then

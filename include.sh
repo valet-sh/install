@@ -68,7 +68,7 @@ function install_dependencies() {
     fi
 
     # if MacOS
-    if [[ "$OSTYPE" == "darwin"* ]]; then
+    if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "x86"* ]]; then
         PYTHON3_BIN="/usr/local/opt/python@3.10/bin/python3.10"
     fi
 
