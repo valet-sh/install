@@ -20,7 +20,7 @@ function install_upgrade() {
     TAG_FILTER="${3}"
     # clone if repo dir is not set yet
     if [[ ! -d "${REPO_DIR}" ]]; then
-        git clone "${REPO_URL}" "${REPO_DIR}"
+        git clone --quiet "${REPO_URL}" "${REPO_DIR}" > ${VSH_INSTALL_LOG} 2>&1
     fi
     # fetch all tags from application git repo
     git --git-dir="${REPO_DIR}/.git" --work-tree="${REPO_DIR}" fetch --tags --quiet
@@ -36,7 +36,7 @@ function install_upgrade() {
         fi
     done
     # return used git tag
-    echo "${GIT_TAG}"
+    echo "Release ${GIT_TAG} cloned"
 }
 
 ##############################################################################
@@ -51,7 +51,6 @@ function install_migration() {
 # install dependencies
 ##############################################################################
 function install_dependencies() {
-    ARCH=$(uname -m)
     VENV_DIR="${1}"
     REPO_DIR="${2}"
     PIP_INSTALL_OPTS=""
@@ -80,14 +79,14 @@ function install_dependencies() {
     # clone if repo dir is not set yet
     if [[ ! -d "${VENV_DIR}" ]]; then
         # (re)create venv if it does not exist
-        ${PYTHON3_BIN} -m venv ${VENV_CREATE_OPTS} "${VENV_DIR}"
+        ${PYTHON3_BIN} -m venv ${VENV_CREATE_OPTS} "${VENV_DIR}" > ${VSH_INSTALL_LOG} 2>&1
     fi
     # activate valet.sh venv
     # shellcheck source=/dev/null
     source "${VENV_DIR}/bin/activate"
     # install python dependencies via pip3
-    pip3 install ${PIP_INSTALL_OPTS} --upgrade setuptools==60.8.2 wheel==0.37.1
-    pip3 install ${PIP_INSTALL_OPTS} -r "${REPO_DIR}/requirements.txt"
+    pip3 install ${PIP_INSTALL_OPTS} --upgrade setuptools==60.8.2 wheel==0.37.1 > ${VSH_INSTALL_LOG} 2>&1
+    pip3 install ${PIP_INSTALL_OPTS} -r "${REPO_DIR}/requirements.txt" > ${VSH_INSTALL_LOG} 2>&1
     # check if there is a requirements.yml in repo dir
     if [ -f "${REPO_DIR}/requirements.yml" ]; then
         # install collections based on requirements.yml file in repo dir
