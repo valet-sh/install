@@ -88,12 +88,12 @@ sudo chmod 775 "${VSH_INSTALL_DIR}"
 sudo chown "${VSH_USER}":"${VSH_GROUP}" "${VSH_INSTALL_DIR}"
 
 # mv repo dir to tmp folder if exists deleting it after installation
-mv "${VSH_REPO_DIR}" "/tmp/${VSH_GITHUB_REPO_NAME}" &>> ${VSH_INSTALL_LOG} || true
+mv "${VSH_REPO_DIR}" "/tmp/${VSH_GITHUB_REPO_NAME}" &> /dev/null || true
 # install application
 install_upgrade "${VSH_GITHUB_REPO_URL}" "${VSH_REPO_DIR}"
 
 # mv venv to tmp folder if exists deleting it after installation
-mv ${VSH_VENV_DIR} "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &>> ${VSH_INSTALL_LOG} || true
+mv ${VSH_VENV_DIR} "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &> /dev/null || true
 # install dependencies in venv
 install_dependencies "${VSH_VENV_DIR}" "${VSH_REPO_DIR}"
 
@@ -101,8 +101,8 @@ install_dependencies "${VSH_VENV_DIR}" "${VSH_REPO_DIR}"
 install_link "${VSH_VENV_DIR}"
 
 # cleanup
-rm -rf "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &>> ${VSH_INSTALL_LOG} || true
-rm -rf "/tmp/${VSH_GITHUB_REPO_NAME}" &>> ${VSH_INSTALL_LOG} || true
+rm -rf "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &> /dev/null || true
+rm -rf "/tmp/${VSH_GITHUB_REPO_NAME}" &> /dev/null || true
 
 # output status
 echo ""
