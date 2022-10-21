@@ -60,6 +60,11 @@ if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
 
 fi
 
+# delete ansible-facts file if exists
+if [ -f "/tmp/ansible-facts/local" ] ; then
+    rm "/tmp/ansible-facts/local"
+fi
+
 # if MacOS
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # check if brew is installed
