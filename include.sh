@@ -35,6 +35,9 @@ function install_upgrade() {
             break
         fi
     done
+
+    # return used git tag
+    echo "${GIT_TAG}"
 }
 
 ##############################################################################
