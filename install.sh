@@ -42,6 +42,7 @@ out "install"
 echo ""
 echo "full install log: ${VSH_INSTALL_LOG}"
 echo ""
+echo "" > ${VSH_INSTALL_LOG} 2>&1
 
 # if linux
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -53,6 +54,10 @@ fi
 # if MacOS on M1
 if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
   HOMEBREW_PREFIX="/opt/homebrew"
+
+  echo " - install rosetta..."
+  /usr/sbin/softwareupdate --install-rosetta --agree-to-license >> ${VSH_INSTALL_LOG} 2>&1
+
 fi
 
 # if MacOS
@@ -61,16 +66,16 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     if ! command -v ${HOMEBREW_PREFIX}/bin/brew &> /dev/null
         then
             echo " - brew could not be found. Installing..."
-            yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" > ${VSH_INSTALL_LOG} 2>&1
+            yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >> ${VSH_INSTALL_LOG} 2>&1
             export CPPFLAGS=-I${HOMEBREW_PREFIX}/opt/openssl/include
             export LDFLAGS=-L${HOMEBREW_PREFIX}/opt/openssl/lib
         fi
 
     echo " - install required brew packages"
-    ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.10 > ${VSH_INSTALL_LOG} 2>&1
+    ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.10 >> ${VSH_INSTALL_LOG} 2>&1
 
     # init brew services by calling it
-    ${HOMEBREW_PREFIX}/bin/brew services list > ${VSH_INSTALL_LOG} 2>&1
+    ${HOMEBREW_PREFIX}/bin/brew services list >> ${VSH_INSTALL_LOG} 2>&1
     VSH_GROUP="admin"
 fi
 
@@ -83,12 +88,12 @@ sudo chmod 775 "${VSH_INSTALL_DIR}"
 sudo chown "${VSH_USER}":"${VSH_GROUP}" "${VSH_INSTALL_DIR}"
 
 # mv repo dir to tmp folder if exists deleting it after installation
-mv "${VSH_REPO_DIR}" "/tmp/${VSH_GITHUB_REPO_NAME}" &> ${VSH_INSTALL_LOG} || true
+mv "${VSH_REPO_DIR}" "/tmp/${VSH_GITHUB_REPO_NAME}" &>> ${VSH_INSTALL_LOG} || true
 # install application
 install_upgrade "${VSH_GITHUB_REPO_URL}" "${VSH_REPO_DIR}"
 
 # mv venv to tmp folder if exists deleting it after installation
-mv ${VSH_VENV_DIR} "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &> ${VSH_INSTALL_LOG} || true
+mv ${VSH_VENV_DIR} "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &>> ${VSH_INSTALL_LOG} || true
 # install dependencies in venv
 install_dependencies "${VSH_VENV_DIR}" "${VSH_REPO_DIR}"
 
@@ -96,8 +101,8 @@ install_dependencies "${VSH_VENV_DIR}" "${VSH_REPO_DIR}"
 install_link "${VSH_VENV_DIR}"
 
 # cleanup
-rm -rf "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &> ${VSH_INSTALL_LOG} || true
-rm -rf "/tmp/${VSH_GITHUB_REPO_NAME}" &> ${VSH_INSTALL_LOG} || true
+rm -rf "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &>> ${VSH_INSTALL_LOG} || true
+rm -rf "/tmp/${VSH_GITHUB_REPO_NAME}" &>> ${VSH_INSTALL_LOG} || true
 
 # output status
 echo ""
