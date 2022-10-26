@@ -7,6 +7,7 @@
 # Author: Johann Zelger <j.zelger@techdivision.com>
 ################################################################################
 
+VSH_INSTALL_LOG="/tmp/valet-sh-install.log"
 # semver validator regex
 SEMVER_REGEX='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
 
