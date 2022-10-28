@@ -105,6 +105,12 @@ function install_dependencies() {
 ##############################################################################
 function install_link() {
     VENV_DIR="${1}"
+
+    if [[ ! -d "/usr/local/bin" ]]; then
+      sudo mkdir /usr/local/bin
+      sudo chown -R $USER /usr/local/bin
+    fi
+
     # (re)set system-wide symlink to be in path
     sudo ln -sf "${VENV_DIR}/bin/valet.sh" "/usr/local/bin/valet.sh"
 }
