@@ -19,6 +19,4 @@ bash <(curl -fsSL https://raw.githubusercontent.com/valet-sh/install/master/inst
 
 ## Uninstall valet-sh
 
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/valet-sh/install/master/uninstall.sh)
-```
+Unfortunately there is no process to uninstall valet.sh automaically at the moment.
