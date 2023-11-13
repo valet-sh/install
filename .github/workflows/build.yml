@@ -31,13 +31,6 @@ jobs:
     - name: script
       run: bash ${GITHUB_WORKSPACE}/install.sh
       shell: bash
-  install-on-macos-11:
-    runs-on: macos-11
-    steps:
-    - uses: actions/checkout@v1
-    - name: script
-      run: bash ${GITHUB_WORKSPACE}/install.sh
-      shell: bash
   install-on-macos-12:
     runs-on: macos-12
     steps:
