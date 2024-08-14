@@ -19,7 +19,7 @@ VSH_INSTALL_LOG="/tmp/valet-sh-install.log"
 VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="valet-sh"}
 VSH_GITHUB_REPO_NAME=${VSH_GITHUB_REPO_NAME:="valet-sh"}
 VSH_GITHUB_REPO_URL=${VSH_GITHUB_REPO_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_REPO_NAME}"}
-VSH_INCLUDE_URL=${VSH_INCLUDE_URL:="https://raw.githubusercontent.com/${VSH_GITHUB_REPO_NAMESPACE}/install/master/include.sh"}
+VSH_INCLUDE_URL=${VSH_INCLUDE_URL:="https://raw.githubusercontent.com/${VSH_GITHUB_REPO_NAMESPACE}/install/next/include.sh"}
 VSH_INSTALL_DIR="${VSH_PREFIX}/${VSH_GITHUB_REPO_NAMESPACE}"
 VSH_REPO_DIR="${VSH_INSTALL_DIR}/${VSH_GITHUB_REPO_NAME}"
 VSH_VENV_DIR="${VSH_INSTALL_DIR}/venv"
@@ -97,16 +97,13 @@ mv "${VSH_REPO_DIR}" "/tmp/${VSH_GITHUB_REPO_NAME}" &> /dev/null || true
 # install application
 install_upgrade "${VSH_GITHUB_REPO_URL}" "${VSH_REPO_DIR}"
 
-# mv venv to tmp folder if exists deleting it after installation
-mv ${VSH_VENV_DIR} "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &> /dev/null || true
-# install dependencies in venv
-install_dependencies "${VSH_VENV_DIR}" "${VSH_REPO_DIR}"
+# install runtime
+install_upgrade_runtime "${VSH_VENV_DIR}" "${VSH_REPO_DIR}"
 
 # (re)set system-wide symlink to be in path
 install_link "${VSH_VENV_DIR}"
 
 # cleanup
-rm -rf "/tmp/${VSH_GITHUB_REPO_NAMESPACE}-venv" &> /dev/null || true
 rm -rf "/tmp/${VSH_GITHUB_REPO_NAME}" &> /dev/null || true
 
 # output status

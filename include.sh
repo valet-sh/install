@@ -5,6 +5,7 @@
 #
 # Copyright: (C) 2021 TechDivision GmbH - All Rights Reserved
 # Author: Johann Zelger <j.zelger@techdivision.com>
+# Author: Philipp Dittert <p.dittert@techdivision.com>
 ################################################################################
 
 VSH_INSTALL_LOG="/tmp/valet-sh-install.log"
@@ -53,51 +54,7 @@ function install_migration() {
 # install dependencies
 ##############################################################################
 function install_dependencies() {
-    VENV_DIR="${1}"
-    REPO_DIR="${2}"
-    PIP_INSTALL_OPTS=""
-    VENV_CREATE_OPTS=""
-
-    # call possible migration
-    install_migration
-
-    # check if there is linux and modify command opts
-    if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        PIP_INSTALL_OPTS="-I"
-        VENV_CREATE_OPTS="--system-site-packages"
-        PYTHON3_BIN="/usr/bin/python3"
-    fi
-
-    # if MacOS
-    if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "x86"* ]]; then
-        PYTHON3_BIN="/usr/local/opt/python@3.10/bin/python3.10"
-    fi
-
-    # if MacOS on M1
-    if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
-        PYTHON3_BIN="/opt/homebrew/opt/python@3.10/bin/python3.10"
-    fi
-    
-    # clone if repo dir is not set yet
-    if [[ ! -d "${VENV_DIR}" ]]; then
-        # (re)create venv if it does not exist
-        ${PYTHON3_BIN} -m venv ${VENV_CREATE_OPTS} "${VENV_DIR}" >> ${VSH_INSTALL_LOG} 2>&1
-    fi
-    # activate valet.sh venv
-    # shellcheck source=/dev/null
-    source "${VENV_DIR}/bin/activate"
-    # install python dependencies via pip3
-    pip3 install ${PIP_INSTALL_OPTS} --upgrade setuptools==60.8.2 wheel==0.37.1 >> ${VSH_INSTALL_LOG} 2>&1
-    echo " - install ansible"
-    pip3 install ${PIP_INSTALL_OPTS} -r "${REPO_DIR}/requirements.txt" >> ${VSH_INSTALL_LOG} 2>&1
-    # check if there is a requirements.yml in repo dir
-    if [ -f "${REPO_DIR}/requirements.yml" ]; then
-        # install collections based on requirements.yml file in repo dir
-        echo " - install python dependencies"
-        ANSIBLE_COLLECTIONS_PATHS="${REPO_DIR}/collections" ansible-galaxy collection install -r "${REPO_DIR}/requirements.yml" -p "${REPO_DIR}/collections" >> ${VSH_INSTALL_LOG} 2>&1
-    fi
-    # deactivate valet.sh venv
-    deactivate
+    install_upgrade_runtime ${1} ${2}
 }
 
 ##############################################################################
@@ -115,3 +72,95 @@ function install_link() {
     sudo ln -sf "${VENV_DIR}/bin/valet.sh" "/usr/local/bin/valet.sh"
 }
 
+##############################################################################
+# install or upgrade runtime package
+##############################################################################
+function install_upgrade_runtime() {
+    VENV_DIR="${1}"
+    REPO_DIR="${2}"
+
+    # call possible migration
+    install_migration
+
+    # when valet-sh project contains no .runtime_version file to nothing
+    if [ ! -f "${REPO_DIR}/.runtime_version" ]
+    then
+      return
+    fi
+
+    # when current installed venv has no .version file, replace with runtime package
+    if [ ! -f "${VENV_DIR}/.version" ]
+    then
+      do_upgrade_runtime
+      return
+    fi
+
+    # when desired .runtime_version differs from installed .version, replace runtime
+    diff -q "${REPO_DIR}/.runtime_version" "${VENV_DIR}/.version" > /dev/null 2>&1
+    DIFF=$?
+    if [ "$DIFF" -ne "0" ]
+    then
+      do_upgrade_runtime "${VENV_DIR}" "${REPO_DIR}"
+      return
+    fi
+}
+
+##############################################################################
+# actual upgrade runtime package
+##############################################################################
+function do_runtime_upgrade() {
+    VENV_DIR="${1}"
+    REPO_DIR="${2}"
+    VSH_BASE_DIR="$(dirname $VENV_DIR)"
+
+    TARGET_RUNTIME_VERSION="$(cat ${REPO_DIR}/.runtime_version)"
+
+    # if Linux/Ubuntu
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        . /etc/os-release
+
+        RUNTIME_PACKAGE="${ID}-${VERSION_CODENAME}"
+    fi
+
+    # if MacOS
+    if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "x86"* ]]; then
+        RUNTIME_PACKAGE="macos-amd64"
+    fi
+
+    # if MacOS on M1
+    if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
+        RUNTIME_PACKAGE="macos-arm64"
+    fi
+
+    TARGET_RUNTIME_FILENAME=${RUNTIME_PACKAGE}.tar.gz
+    TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/tag/${TARGET_RUNTIME_VERSION}/download/${TARGET_RUNTIME_FILENAME}
+
+    TARGET_RUNTIME_RELEASE_CHECK=$(curl -I -L -s -o /dev/null -w "%{http_code}" ${TARGET_RUNTIME_DOWNLOAD_URL})
+
+    if [[ "$TARGET_RUNTIME_RELEASE_CHECK" != "200" ]]; then
+      echo "Runtime release ${TARGET_RUNTIME_VERSION} not available!"
+      exit 1
+    fi
+
+    curl -L -s -o ${{ VSH_BASE_DIR }}/${TARGET_RUNTIME_FILENAME}  ${TARGET_RUNTIME_DOWNLOAD_URL}
+
+    if [ $? -ne 0 ]; then
+        echo "Runtime download failed. Please check our internet connection and try it again..."
+        exit 1
+    fi
+
+    if [ -d $VENV_DIR ]; then
+      mv ${VENV_DIR} ${VENV_DIR}-tmp
+    fi
+
+    tar -xzf ${{ VSH_BASE_DIR }}/${TARGET_RUNTIME_FILENAME}
+
+    if [ $? -ne 0 ]; then
+        echo "Runtime installation failed..."
+        exit 1
+    fi
+
+    if [ -d ${VENV_DIR}-tmp ]; then
+      mv ${VENV_DIR} ${VENV_DIR}-tmp
+    fi
+}
