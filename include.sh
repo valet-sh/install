@@ -136,12 +136,16 @@ function do_runtime_upgrade() {
 
     TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/download/${TARGET_RUNTIME_VERSION}/${TARGET_RUNTIME_FILENAME}
 
+    echo "Check for runtime release ${TARGET_RUNTIME_VERSION}"
+
     TARGET_RUNTIME_RELEASE_CHECK=$(curl -I -L -s -o /dev/null -w "%{http_code}" "${TARGET_RUNTIME_DOWNLOAD_URL}")
 
     if [[ "$TARGET_RUNTIME_RELEASE_CHECK" != "200" ]]; then
       echo "Runtime release ${TARGET_RUNTIME_VERSION} not available!"
       exit 1
     fi
+
+    echo "Downloading runtime release ${TARGET_RUNTIME_VERSION}"
 
     curl -L -s -o "${VSH_BASE_DIR}"/"${TARGET_RUNTIME_FILENAME}" "${TARGET_RUNTIME_DOWNLOAD_URL}"
 
@@ -154,6 +158,8 @@ function do_runtime_upgrade() {
       mv "${VENV_DIR}" "${VENV_DIR}-tmp"
     fi
 
+    echo "Installing runtime..."
+
     tar -xzf "${VSH_BASE_DIR}"/"${TARGET_RUNTIME_FILENAME}" -C "${VSH_BASE_DIR}"
 
     if [ $? -ne 0 ]; then
@@ -161,7 +167,13 @@ function do_runtime_upgrade() {
         exit 1
     fi
 
+    echo "cleaning up..."
+
     if [ -d "${VENV_DIR}-tmp" ]; then
       rm -r "${VENV_DIR}-tmp"
     fi
+
+    rm "${VSH_BASE_DIR}"/"${TARGET_RUNTIME_FILENAME}"
+
+
 }
