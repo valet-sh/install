@@ -142,7 +142,7 @@ function do_runtime_upgrade() {
       exit 1
     fi
 
-    curl -L -s -o ${{ VSH_BASE_DIR }}/${TARGET_RUNTIME_FILENAME}  ${TARGET_RUNTIME_DOWNLOAD_URL}
+    curl -L -s -o ${ VSH_BASE_DIR }/${TARGET_RUNTIME_FILENAME}  ${TARGET_RUNTIME_DOWNLOAD_URL}
 
     if [ $? -ne 0 ]; then
         echo "Runtime download failed. Please check our internet connection and try it again..."
@@ -153,7 +153,7 @@ function do_runtime_upgrade() {
       mv ${VENV_DIR} ${VENV_DIR}-tmp
     fi
 
-    tar -xzf ${{ VSH_BASE_DIR }}/${TARGET_RUNTIME_FILENAME}
+    tar -xzf ${ VSH_BASE_DIR }/${TARGET_RUNTIME_FILENAME} -C ${ VSH_BASE_DIR }
 
     if [ $? -ne 0 ]; then
         echo "Runtime installation failed..."
