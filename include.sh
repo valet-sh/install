@@ -134,7 +134,7 @@ function do_runtime_upgrade() {
 
     TARGET_RUNTIME_FILENAME=${RUNTIME_PACKAGE}.tar.gz
 
-    TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/download/${TARGET_RUNTIME_VERSION}${TARGET_RUNTIME_FILENAME}
+    TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/download/${TARGET_RUNTIME_VERSION}/${TARGET_RUNTIME_FILENAME}
 
     TARGET_RUNTIME_RELEASE_CHECK=$(curl -I -L -s -o /dev/null -w "%{http_code}" "${TARGET_RUNTIME_DOWNLOAD_URL}")
 
