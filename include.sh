@@ -54,9 +54,6 @@ function install_migration() {
 # install dependencies
 ##############################################################################
 function install_dependencies() {
-
-    echo "running install_dependencies..."
-
     install_upgrade_runtime ${1} ${2}
 }
 
@@ -94,7 +91,7 @@ function install_upgrade_runtime() {
     # when current installed venv has no .version file, replace with runtime package
     if [ ! -f "${VENV_DIR}/.version" ]
     then
-      do_upgrade_runtime
+      do_runtime_upgrade "${VENV_DIR}" "${REPO_DIR}"
       return
     fi
 
@@ -103,7 +100,7 @@ function install_upgrade_runtime() {
     DIFF=$?
     if [ "$DIFF" -ne "0" ]
     then
-      do_upgrade_runtime "${VENV_DIR}" "${REPO_DIR}"
+      do_runtime_upgrade "${VENV_DIR}" "${REPO_DIR}"
       return
     fi
 }
