@@ -54,6 +54,9 @@ function install_migration() {
 # install dependencies
 ##############################################################################
 function install_dependencies() {
+
+    echo "running install_dependencies..."
+
     install_upgrade_runtime ${1} ${2}
 }
 
