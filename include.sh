@@ -103,8 +103,9 @@ function install_upgrade_runtime() {
 
     echo "debug0"
 
+    set +e
     # when desired .runtime_version differs from installed .version, replace runtime
-    diff -q "${REPO_DIR}/.runtime_version" "${VENV_DIR}/.version" > /dev/null 2>&1 || true
+    diff -q "${REPO_DIR}/.runtime_version" "${VENV_DIR}/.version" > /dev/null 2>&1
 
     echo "debug1"
 
@@ -118,6 +119,8 @@ function install_upgrade_runtime() {
       do_runtime_upgrade "${VENV_DIR}" "${REPO_DIR}"
       return
     fi
+
+    set -e
 }
 
 ##############################################################################
