@@ -113,6 +113,8 @@ function install_upgrade_runtime() {
       echo "debug3"
       do_runtime_upgrade "${VENV_DIR}" "${REPO_DIR}"
       return
+    else
+      echo "valet.sh runtime is up2date"
     fi
 
     set -e
