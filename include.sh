@@ -79,14 +79,20 @@ function install_upgrade_runtime() {
     VENV_DIR="${1}"
     REPO_DIR="${2}"
 
+    echo "debug-1"
+
     # call possible migration
     install_migration
+
+    echo "debug-12"
 
     # when valet-sh project contains no .runtime_version file to nothing
     if [ ! -f "${REPO_DIR}/.runtime_version" ]
     then
       return
     fi
+
+    echo "debug-13"
 
     # when current installed venv has no .version file, replace with runtime package
     if [ ! -f "${VENV_DIR}/.version" ]
