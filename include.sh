@@ -119,7 +119,7 @@ function do_runtime_upgrade() {
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         . /etc/os-release
 
-        RUNTIME_PACKAGE="${ID}-${VERSION_CODENAME}"
+        RUNTIME_PACKAGE="${ID}-${VERSION_CODENAME}-amd64"
     fi
 
     # if MacOS
@@ -133,7 +133,8 @@ function do_runtime_upgrade() {
     fi
 
     TARGET_RUNTIME_FILENAME=${RUNTIME_PACKAGE}.tar.gz
-    TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/tag/${TARGET_RUNTIME_VERSION}/download/${TARGET_RUNTIME_FILENAME}
+
+    TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/download/${TARGET_RUNTIME_VERSION}${TARGET_RUNTIME_FILENAME}
 
     TARGET_RUNTIME_RELEASE_CHECK=$(curl -I -L -s -o /dev/null -w "%{http_code}" "${TARGET_RUNTIME_DOWNLOAD_URL}")
 
