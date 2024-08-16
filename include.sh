@@ -111,6 +111,8 @@ function install_upgrade_runtime() {
 
     DIFF=$?
 
+    echo "${DIFF}"
+
     echo "debug2"
 
     if [ "$DIFF" -ne "0" ]
