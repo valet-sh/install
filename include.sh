@@ -54,7 +54,7 @@ function install_migration() {
 # install dependencies
 ##############################################################################
 function install_dependencies() {
-    install_upgrade_runtime ${1} ${2}
+    install_upgrade_runtime "${1}" "${2}"
 }
 
 ##############################################################################
@@ -65,7 +65,7 @@ function install_link() {
 
     if [[ ! -d "/usr/local/bin" ]]; then
       sudo mkdir /usr/local/bin
-      sudo chown -R $USER /usr/local/bin
+      sudo chown -R "$USER" /usr/local/bin
     fi
 
     # (re)set system-wide symlink to be in path
@@ -111,9 +111,9 @@ function install_upgrade_runtime() {
 function do_runtime_upgrade() {
     VENV_DIR="${1}"
     REPO_DIR="${2}"
-    VSH_BASE_DIR="$(dirname $VENV_DIR)"
+    VSH_BASE_DIR="$(dirname "$VENV_DIR")"
 
-    TARGET_RUNTIME_VERSION="$(cat ${REPO_DIR}/.runtime_version)"
+    TARGET_RUNTIME_VERSION="$(cat "${REPO_DIR}"/.runtime_version)"
 
     # if Linux/Ubuntu
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -135,32 +135,32 @@ function do_runtime_upgrade() {
     TARGET_RUNTIME_FILENAME=${RUNTIME_PACKAGE}.tar.gz
     TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/tag/${TARGET_RUNTIME_VERSION}/download/${TARGET_RUNTIME_FILENAME}
 
-    TARGET_RUNTIME_RELEASE_CHECK=$(curl -I -L -s -o /dev/null -w "%{http_code}" ${TARGET_RUNTIME_DOWNLOAD_URL})
+    TARGET_RUNTIME_RELEASE_CHECK=$(curl -I -L -s -o /dev/null -w "%{http_code}" "${TARGET_RUNTIME_DOWNLOAD_URL}")
 
     if [[ "$TARGET_RUNTIME_RELEASE_CHECK" != "200" ]]; then
       echo "Runtime release ${TARGET_RUNTIME_VERSION} not available!"
       exit 1
     fi
 
-    curl -L -s -o ${ VSH_BASE_DIR }/${TARGET_RUNTIME_FILENAME}  ${TARGET_RUNTIME_DOWNLOAD_URL}
+    curl -L -s -o "${VSH_BASE_DIR}"/"${TARGET_RUNTIME_FILENAME}" "${TARGET_RUNTIME_DOWNLOAD_URL}"
 
     if [ $? -ne 0 ]; then
         echo "Runtime download failed. Please check our internet connection and try it again..."
         exit 1
     fi
 
-    if [ -d $VENV_DIR ]; then
-      mv ${VENV_DIR} ${VENV_DIR}-tmp
+    if [ -d "$VENV_DIR" ]; then
+      mv "${VENV_DIR}" "${VENV_DIR}-tmp"
     fi
 
-    tar -xzf ${ VSH_BASE_DIR }/${TARGET_RUNTIME_FILENAME} -C ${ VSH_BASE_DIR }
+    tar -xzf "${VSH_BASE_DIR}"/"${TARGET_RUNTIME_FILENAME}" -C "${VSH_BASE_DIR}"
 
     if [ $? -ne 0 ]; then
         echo "Runtime installation failed..."
         exit 1
     fi
 
-    if [ -d ${VENV_DIR}-tmp ]; then
-      mv ${VENV_DIR} ${VENV_DIR}-tmp
+    if [ -d "${VENV_DIR}-tmp" ]; then
+      rm -r "${VENV_DIR}-tmp"
     fi
 }
