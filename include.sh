@@ -116,6 +116,7 @@ function do_runtime_upgrade() {
     VENV_DIR="${1}"
     REPO_DIR="${2}"
     VSH_BASE_DIR="$(dirname "$VENV_DIR")"
+    ARCH=$(uname -m)
 
     TARGET_RUNTIME_VERSION="$(cat "${REPO_DIR}"/.runtime_version)"
 
@@ -134,6 +135,11 @@ function do_runtime_upgrade() {
     # if MacOS on M1
     if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
         RUNTIME_PACKAGE="macos-arm64"
+    fi
+
+    if [ -z  "${RUNTIME_PACKAGE}" ]; then
+      echo "Error: Determining the operating system version was not successful!"
+      exit 1
     fi
 
     TARGET_RUNTIME_FILENAME=${RUNTIME_PACKAGE}.tar.gz
