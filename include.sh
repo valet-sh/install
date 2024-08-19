@@ -142,19 +142,22 @@ function do_runtime_upgrade() {
       exit 1
     fi
 
-    if [ -z  "${VSH_DEBUG_ON}" ]; then
-      echo "VSH_DEBUG_ON is empty"
-    fi
-
     TARGET_RUNTIME_FILENAME=${RUNTIME_PACKAGE}.tar.gz
 
     TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/download/${TARGET_RUNTIME_VERSION}/${TARGET_RUNTIME_FILENAME}
 
+
+    if [ "${VSH_DEBUG_ON}" = true ] ; then
+      echo "Debug: ${TARGET_RUNTIME_DOWNLOAD_URL}"
+    fi
+
     echo "Check for runtime release ${TARGET_RUNTIME_VERSION}"
 
-    echo ${TARGET_RUNTIME_DOWNLOAD_URL}
-
     TARGET_RUNTIME_RELEASE_CHECK=$(curl -I -L -s -o /dev/null -w "%{http_code}" "${TARGET_RUNTIME_DOWNLOAD_URL}")
+
+    if [ "${VSH_DEBUG_ON}" = true ] ; then
+      echo "Debug: Status-Code ${TARGET_RUNTIME_RELEASE_CHECK}"
+    fi
 
     if [[ "$TARGET_RUNTIME_RELEASE_CHECK" != "200" ]]; then
       echo "Error: Runtime release ${TARGET_RUNTIME_VERSION} not available!"
