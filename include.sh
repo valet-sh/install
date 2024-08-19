@@ -120,6 +120,10 @@ function do_runtime_upgrade() {
 
     TARGET_RUNTIME_VERSION="$(cat "${REPO_DIR}"/.runtime_version)"
 
+    if [ "${VSH_DEBUG}" = true ] ; then
+      echo "Debug: TARGET_RUNTIME_VERSION=${TARGET_RUNTIME_VERSION}"
+    fi
+
     # if Linux/Ubuntu
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         . /etc/os-release
@@ -142,21 +146,24 @@ function do_runtime_upgrade() {
       exit 1
     fi
 
+    if [ "${VSH_DEBUG}" = true ] ; then
+      echo "Debug: RUNTIME_PACKAGE=${RUNTIME_PACKAGE}"
+    fi
+
     TARGET_RUNTIME_FILENAME=${RUNTIME_PACKAGE}.tar.gz
 
     TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/download/${TARGET_RUNTIME_VERSION}/${TARGET_RUNTIME_FILENAME}
 
-
-    if [ "${VSH_DEBUG_ON}" = true ] ; then
-      echo "Debug: ${TARGET_RUNTIME_DOWNLOAD_URL}"
+    if [ "${VSH_DEBUG}" = true ] ; then
+      echo "Debug: TARGET_RUNTIME_DOWNLOAD_URL=${TARGET_RUNTIME_DOWNLOAD_URL}"
     fi
 
     echo "Check for runtime release ${TARGET_RUNTIME_VERSION}"
 
     TARGET_RUNTIME_RELEASE_CHECK=$(curl -I -L -s -o /dev/null -w "%{http_code}" "${TARGET_RUNTIME_DOWNLOAD_URL}")
 
-    if [ "${VSH_DEBUG_ON}" = true ] ; then
-      echo "Debug: Status-Code ${TARGET_RUNTIME_RELEASE_CHECK}"
+    if [ "${VSH_DEBUG}" = true ] ; then
+      echo "Debug: TARGET_RUNTIME_RELEASE_CHECK=${TARGET_RUNTIME_RELEASE_CHECK}"
     fi
 
     if [[ "$TARGET_RUNTIME_RELEASE_CHECK" != "200" ]]; then
@@ -193,6 +200,4 @@ function do_runtime_upgrade() {
     fi
 
     rm "${VSH_BASE_DIR}"/"${TARGET_RUNTIME_FILENAME}"
-
-
 }
