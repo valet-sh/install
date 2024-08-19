@@ -142,6 +142,10 @@ function do_runtime_upgrade() {
       exit 1
     fi
 
+    if [ -z  "${VSH_DEBUG_ON}" ]; then
+      echo "VSH_DEBUG_ON is empty"
+    fi
+
     TARGET_RUNTIME_FILENAME=${RUNTIME_PACKAGE}.tar.gz
 
     TARGET_RUNTIME_DOWNLOAD_URL=https://github.com/valet-sh/runtime/releases/download/${TARGET_RUNTIME_VERSION}/${TARGET_RUNTIME_FILENAME}
