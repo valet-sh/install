@@ -142,10 +142,12 @@ function do_runtime_upgrade() {
 
     echo "Check for runtime release ${TARGET_RUNTIME_VERSION}"
 
+    echo ${TARGET_RUNTIME_DOWNLOAD_URL}
+
     TARGET_RUNTIME_RELEASE_CHECK=$(curl -I -L -s -o /dev/null -w "%{http_code}" "${TARGET_RUNTIME_DOWNLOAD_URL}")
 
     if [[ "$TARGET_RUNTIME_RELEASE_CHECK" != "200" ]]; then
-      echo "Runtime release ${TARGET_RUNTIME_VERSION} not available!"
+      echo "Error: Runtime release ${TARGET_RUNTIME_VERSION} not available!"
       exit 1
     fi
 
@@ -154,7 +156,7 @@ function do_runtime_upgrade() {
     curl -L -s -o "${VSH_BASE_DIR}"/"${TARGET_RUNTIME_FILENAME}" "${TARGET_RUNTIME_DOWNLOAD_URL}"
 
     if [ $? -ne 0 ]; then
-        echo "Runtime download failed. Please check our internet connection and try it again..."
+        echo "Error: Runtime download failed. Please check our internet connection and try it again..."
         exit 1
     fi
 
@@ -167,7 +169,7 @@ function do_runtime_upgrade() {
     tar -xzf "${VSH_BASE_DIR}"/"${TARGET_RUNTIME_FILENAME}" -C "${VSH_BASE_DIR}"
 
     if [ $? -ne 0 ]; then
-        echo "Runtime installation failed..."
+        echo "Error: Runtime installation failed..."
         exit 1
     fi
 
