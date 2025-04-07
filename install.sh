@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 ################################################################################
-# valet.sh (un)installer
+# valet.sh installer
 #
-# Copyright: (C) 2022 TechDivision GmbH - All Rights Reserved
-# Author: Johann Zelger <j.zelger@techdivision.com>
+# Copyright: (C) 2025 TechDivision GmbH - All Rights Reserved
+# Author: Philipp Dittert <p.dittert@techdivision.com>
 ################################################################################
 
 # exit immediately if a command exits with a non-zero status
@@ -14,28 +14,33 @@ set -e
 VSH_NAME="valet.sh"
 VSH_URL="https://valet.sh"
 VSH_PREFIX="/usr/local"
-HOMEBREW_PREFIX="/usr/local"
+VSH_INSTALLER_SUFFIX="installer"
 VSH_INSTALL_LOG="/tmp/valet-sh-install.log"
 VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="valet-sh"}
-VSH_GITHUB_REPO_NAME=${VSH_GITHUB_REPO_NAME:="valet-sh"}
-VSH_GITHUB_REPO_URL=${VSH_GITHUB_REPO_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_REPO_NAME}"}
-VSH_INCLUDE_URL=${VSH_INCLUDE_URL:="https://raw.githubusercontent.com/${VSH_GITHUB_REPO_NAMESPACE}/install/next/include.sh"}
-VSH_INSTALL_DIR="${VSH_PREFIX}/${VSH_GITHUB_REPO_NAMESPACE}"
-VSH_REPO_DIR="${VSH_INSTALL_DIR}/${VSH_GITHUB_REPO_NAME}"
-VSH_VENV_DIR="${VSH_INSTALL_DIR}/venv"
+VSH_GITHUB_INSTALLER_REPO_NAME=${VSH_GITHUB_INSTALLER_REPO_NAME:="installer"}
+VSH_DEBUG=${VSH_DEBUG:=0}
+
+
+VSH_INSTALLER_DIR=${VSH_PREFIX}/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_INSTALLER_SUFFIX}
+VSH_INSTALLER_BINARY=valet-sh-installer
+VSH_GITHUB_INSTALLER_URL=${VSH_GITHUB_INSTALLER_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_INSTALLER_REPO_NAME}"}
+
+debug_log() {
+  if [ $VSH_DEBUG -eq 1 ]; then
+    printf 'DEBUG: %s \n' "${1}"
+  fi
+}
+
+
 VSH_USER=${USER}
 ARCH=$(uname -m)
-
-# include external vars and functions
-# shellcheck disable=SC1091
-source /dev/stdin <<< "$( curl -sS ${VSH_INCLUDE_URL} )"
 
 # define stdout print function
 out () {
     printf "\033[0;32m⠹ \033[;1m%s\033[0;0m | %s\n" "${VSH_NAME}" "${1}"
 }
 
-# trigger password promt
+# trigger password prompt
 sudo true
 
 out "install"
@@ -46,65 +51,54 @@ echo "" > ${VSH_INSTALL_LOG} 2>&1
 
 # if linux
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    # update apt package index files
-    sudo apt update && sudo apt -y install git python3 python3-venv
     VSH_GROUP=${VSH_USER}
+
+    VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY=${VSH_GITHUB_INSTALLER_URL}/releases/latest/download/valet-sh-installer_linux_amd64
+    debug_log "Detected OS: Linux amd64"
+    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY}"
 fi
 
-# if MacOS on M1
-if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
-  HOMEBREW_PREFIX="/opt/homebrew"
-
-  echo " - install rosetta..."
-  /usr/sbin/softwareupdate --install-rosetta --agree-to-license >> ${VSH_INSTALL_LOG} 2>&1
-
-fi
-
-# delete ansible-facts file if exists
-if [ -f "/tmp/ansible-facts/local" ] ; then
-    rm "/tmp/ansible-facts/local"
-fi
-
-# if MacOS
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    # check if brew is installed
-    if ! command -v ${HOMEBREW_PREFIX}/bin/brew &> /dev/null
-        then
-            echo " - brew could not be found. Installing..."
-            yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >> ${VSH_INSTALL_LOG} 2>&1
-            export CPPFLAGS=-I${HOMEBREW_PREFIX}/opt/openssl/include
-            export LDFLAGS=-L${HOMEBREW_PREFIX}/opt/openssl/lib
-        fi
-
-    echo " - install required brew packages"
-    ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.10 >> ${VSH_INSTALL_LOG} 2>&1
-
-    # init brew services by calling it
-    ${HOMEBREW_PREFIX}/bin/brew services list >> ${VSH_INSTALL_LOG} 2>&1
+# if MacOS on Intel
+if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "x86_64"* ]]; then
     VSH_GROUP="admin"
+
+    VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY=${VSH_GITHUB_INSTALLER_URL}/releases/latest/download/valet-sh-installer_darwin_amd64
+    debug_log "Detected OS: MacOS amd64"
+    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY}"
 fi
 
-# create install base dir if it does not exist
-if [ ! -d "${VSH_INSTALL_DIR}" ]; then
-    sudo mkdir "${VSH_INSTALL_DIR}"
+# if MacOS on Apple Silicon
+if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
+    VSH_GROUP="admin"
+
+    VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY=${VSH_GITHUB_INSTALLER_URL}/releases/latest/download/valet-sh-installer_darwin_arm64
+    debug_log "Detected OS: MacOS arm64"
+    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY}"
 fi
-# reset correct permissions
-sudo chmod 775 "${VSH_INSTALL_DIR}"
-sudo chown "${VSH_USER}":"${VSH_GROUP}" "${VSH_INSTALL_DIR}"
 
-# mv repo dir to tmp folder if exists deleting it after installation
-mv "${VSH_REPO_DIR}" "/tmp/${VSH_GITHUB_REPO_NAME}" &> /dev/null || true
-# install application
-install_upgrade "${VSH_GITHUB_REPO_URL}" "${VSH_REPO_DIR}"
+# create installer directory and ensure permissions are correct
+debug_log "ensure ${VSH_INSTALLER_DIR} exists"
+sudo mkdir -p "${VSH_INSTALLER_DIR}"
 
-# install runtime
-install_upgrade_runtime "${VSH_VENV_DIR}" "${VSH_REPO_DIR}"
+debug_log "check permissions for ${VSH_INSTALLER_DIR}"
+sudo chmod 775 "${VSH_INSTALLER_DIR}"
 
-# (re)set system-wide symlink to be in path
-install_link "${VSH_VENV_DIR}"
+debug_log "run chown ${VSH_USER}:${VSH_GROUP} ${VSH_INSTALLER_DIR}"
+sudo chown "${VSH_USER}":"${VSH_GROUP}" "${VSH_INSTALLER_DIR}"
 
-# cleanup
-rm -rf "/tmp/${VSH_GITHUB_REPO_NAME}" &> /dev/null || true
+# download latest installer binary when none exists
+if [ ! -f ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY} ]; then
+    debug_log "download binary ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY} to target ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY}"
+    /bin/bash -c "$(curl -fsSL -o ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY} ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY})" >> ${VSH_INSTALL_LOG} 2>&1
+
+    debug_log "change permissions for ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY}"
+    chmod +x ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY}
+else
+  debug_log "binary already exists: ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY}"
+fi
+
+debug_log "start setup ${VSH_INSTALLER_BINARY} setup"
+command ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY} setup
 
 # output status
 echo ""
