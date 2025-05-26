@@ -89,7 +89,7 @@ function install_dependencies() {
     # install python dependencies via pip3
     pip3 install ${PIP_INSTALL_OPTS} --upgrade setuptools==60.8.2 wheel==0.37.1 >> ${VSH_INSTALL_LOG} 2>&1
     echo " - install ansible"
-    pip3 install ${PIP_INSTALL_OPTS} -r "${REPO_DIR}/requirements.txt" >> ${VSH_INSTALL_LOG} 2>&1
+    pip3 install ${PIP_INSTALL_OPTS} --upgrade -r "${REPO_DIR}/requirements.txt" >> ${VSH_INSTALL_LOG} 2>&1
     # check if there is a requirements.yml in repo dir
     if [ -f "${REPO_DIR}/requirements.yml" ]; then
         # install collections based on requirements.yml file in repo dir
