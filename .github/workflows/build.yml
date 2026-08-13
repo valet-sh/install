@@ -17,36 +17,29 @@ jobs:
       uses: ludeeus/action-shellcheck@master
       with:
         severity: error
-  install-on-ubuntu-2004:
-    runs-on: ubuntu-20.04
+  install-on-ubuntu-2404:
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v1
     - name: script
       run: bash ${GITHUB_WORKSPACE}/install.sh
       shell: bash
-  install-on-ubuntu-2204:
-    runs-on: ubuntu-22.04
+  install-on-ubuntu-2604:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: script
+        run: bash ${GITHUB_WORKSPACE}/install.sh
+        shell: bash
+  install-on-macos-15:
+    runs-on: macos-15
     steps:
     - uses: actions/checkout@v1
     - name: script
       run: bash ${GITHUB_WORKSPACE}/install.sh
       shell: bash
-  install-on-macos-12:
-    runs-on: macos-12
-    steps:
-    - uses: actions/checkout@v1
-    - name: script
-      run: bash ${GITHUB_WORKSPACE}/install.sh
-      shell: bash
-  install-on-macos-13:
-    runs-on: macos-13
-    steps:
-    - uses: actions/checkout@v1
-    - name: script
-      run: bash ${GITHUB_WORKSPACE}/install.sh
-      shell: bash
-  install-on-macos-14:
-    runs-on: macos-14
+  install-on-macos-26:
+    runs-on: macos-26
     steps:
     - uses: actions/checkout@v1
     - name: script
