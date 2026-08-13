@@ -14,8 +14,8 @@ set -e
 VSH_NAME="valet.sh"
 VSH_URL="https://valet.sh"
 VSH_INSTALL_LOG="/tmp/valet-sh-install.log"
-VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="mdecamposmendes"}
-VSH_GITHUB_CLI_REPO_NAME=${VSH_GITHUB_CLI_REPO_NAME:="cli"}
+VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="valet-sh"}
+VSH_GITHUB_CLI_REPO_NAME=${VSH_GITHUB_CLI_REPO_NAME:="go-cli"}
 VSH_DEBUG=${VSH_DEBUG:=0}
 
 VSH_CLI_DIR="/usr/local/bin"
@@ -56,11 +56,8 @@ fi
 
 # if MacOS on Intel
 if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "x86_64"* ]]; then
-    VSH_GROUP="admin"
-
-    VSH_GITHUB_LATEST_CLI_RELEASE_BINARY=${VSH_GITHUB_CLI_URL}/releases/latest/download/valet-darwin-amd64
-    debug_log "Detected OS: MacOS amd64"
-    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_CLI_RELEASE_BINARY}"
+    echo "Error: macOS on Intel (x86_64) is no longer supported." >&2
+    exit 1
 fi
 
 # if MacOS on Apple Silicon
