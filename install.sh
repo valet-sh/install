@@ -18,7 +18,7 @@ VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="valet-sh"}
 VSH_GITHUB_CLI_REPO_NAME=${VSH_GITHUB_CLI_REPO_NAME:="go-cli"}
 VSH_DEBUG=${VSH_DEBUG:=0}
 
-VSH_CLI_DIR="/usr/local/bin"
+VSH_CLI_DIR="/usr/local/valet-sh/bin"
 VSH_CLI_BINARY="valet.sh"
 VSH_GITHUB_CLI_URL=${VSH_GITHUB_CLI_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_CLI_REPO_NAME}"}
 
@@ -97,6 +97,9 @@ if [ ! -f ${VSH_CLI_DIR}/${VSH_CLI_BINARY} ]; then
 else
   debug_log "binary already exists: ${VSH_CLI_DIR}/${VSH_CLI_BINARY}"
 fi
+
+debug_log "create symlink for ${VSH_CLI_DIR}/${VSH_CLI_BINARY} to /usr/local/bin/${VSH_CLI_BINARY}"
+sudo ln -sf "${VSH_CLI_DIR}/${VSH_CLI_BINARY}" /usr/local/bin/valet.sh
 
 debug_log "start setup ${VSH_CLI_BINARY} setup"
 command ${VSH_CLI_DIR}/${VSH_CLI_BINARY} setup
