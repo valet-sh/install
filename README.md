@@ -14,3 +14,4 @@ bash <(curl -fsSL https://raw.githubusercontent.com/valet-sh/install/3.x/install
 ```bash
 valet.sh uninstall --purge
 ```
+
