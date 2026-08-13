@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ################################################################################
-# valet.sh installer
+# valet.sh cli
 #
 # Copyright: (C) 2025 TechDivision GmbH - All Rights Reserved
 # Author: Philipp Dittert <p.dittert@techdivision.com>
@@ -13,24 +13,20 @@ set -e
 # define variables
 VSH_NAME="valet.sh"
 VSH_URL="https://valet.sh"
-VSH_PREFIX="/usr/local"
-VSH_INSTALLER_SUFFIX="installer"
 VSH_INSTALL_LOG="/tmp/valet-sh-install.log"
-VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="valet-sh"}
-VSH_GITHUB_INSTALLER_REPO_NAME=${VSH_GITHUB_INSTALLER_REPO_NAME:="installer"}
+VSH_GITHUB_REPO_NAMESPACE=${VSH_GITHUB_REPO_NAMESPACE:="mdecamposmendes"}
+VSH_GITHUB_CLI_REPO_NAME=${VSH_GITHUB_CLI_REPO_NAME:="cli"}
 VSH_DEBUG=${VSH_DEBUG:=0}
 
-
-VSH_INSTALLER_DIR=${VSH_PREFIX}/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_INSTALLER_SUFFIX}
-VSH_INSTALLER_BINARY=valet-sh-installer
-VSH_GITHUB_INSTALLER_URL=${VSH_GITHUB_INSTALLER_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_INSTALLER_REPO_NAME}"}
+VSH_CLI_DIR="/usr/local/bin"
+VSH_CLI_BINARY="valet.sh"
+VSH_GITHUB_CLI_URL=${VSH_GITHUB_CLI_URL:="https://github.com/${VSH_GITHUB_REPO_NAMESPACE}/${VSH_GITHUB_CLI_REPO_NAME}"}
 
 debug_log() {
   if [ $VSH_DEBUG -eq 1 ]; then
     printf 'DEBUG: %s \n' "${1}"
   fi
 }
-
 
 VSH_USER=${USER}
 ARCH=$(uname -m)
@@ -53,52 +49,60 @@ echo "" > ${VSH_INSTALL_LOG} 2>&1
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     VSH_GROUP=${VSH_USER}
 
-    VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY=${VSH_GITHUB_INSTALLER_URL}/releases/latest/download/valet-sh-installer_linux_amd64
+    VSH_GITHUB_LATEST_CLI_RELEASE_BINARY=${VSH_GITHUB_CLI_URL}/releases/latest/download/valet-linux-amd64
     debug_log "Detected OS: Linux amd64"
-    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY}"
+    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_CLI_RELEASE_BINARY}"
 fi
 
 # if MacOS on Intel
 if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "x86_64"* ]]; then
     VSH_GROUP="admin"
 
-    VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY=${VSH_GITHUB_INSTALLER_URL}/releases/latest/download/valet-sh-installer_darwin_amd64
+    VSH_GITHUB_LATEST_CLI_RELEASE_BINARY=${VSH_GITHUB_CLI_URL}/releases/latest/download/valet-darwin-amd64
     debug_log "Detected OS: MacOS amd64"
-    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY}"
+    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_CLI_RELEASE_BINARY}"
 fi
 
 # if MacOS on Apple Silicon
 if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
     VSH_GROUP="admin"
 
-    VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY=${VSH_GITHUB_INSTALLER_URL}/releases/latest/download/valet-sh-installer_darwin_arm64
+    VSH_GITHUB_LATEST_CLI_RELEASE_BINARY=${VSH_GITHUB_CLI_URL}/releases/latest/download/valet-darwin-arm64
     debug_log "Detected OS: MacOS arm64"
-    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY}"
+    debug_log "Download installer binary: ${VSH_GITHUB_LATEST_CLI_RELEASE_BINARY}"
 fi
 
 # create installer directory and ensure permissions are correct
-debug_log "ensure ${VSH_INSTALLER_DIR} exists"
-sudo mkdir -p "${VSH_INSTALLER_DIR}"
+debug_log "ensure ${VSH_CLI_DIR} exists"
+sudo mkdir -p "${VSH_CLI_DIR}"
 
-debug_log "check permissions for ${VSH_INSTALLER_DIR}"
-sudo chmod 775 "${VSH_INSTALLER_DIR}"
+debug_log "check permissions for ${VSH_CLI_DIR}"
+sudo chmod 775 "${VSH_CLI_DIR}"
 
-debug_log "run chown ${VSH_USER}:${VSH_GROUP} ${VSH_INSTALLER_DIR}"
-sudo chown "${VSH_USER}":"${VSH_GROUP}" "${VSH_INSTALLER_DIR}"
+debug_log "run chown ${VSH_USER}:${VSH_GROUP} ${VSH_CLI_DIR}"
+sudo chown "${VSH_USER}":"${VSH_GROUP}" "${VSH_CLI_DIR}"
 
-# download latest installer binary when none exists
-if [ ! -f ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY} ]; then
-    debug_log "download binary ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY} to target ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY}"
-    /bin/bash -c "$(curl -fsSL -o ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY} ${VSH_GITHUB_LATEST_INSTALLER_RELEASE_BINARY})" >> ${VSH_INSTALL_LOG} 2>&1
+# download latest cli binary when none exists
+if [ ! -f ${VSH_CLI_DIR}/${VSH_CLI_BINARY} ]; then
+    debug_log "download binary ${VSH_GITHUB_LATEST_CLI_RELEASE_BINARY} to target ${VSH_CLI_DIR}/${VSH_CLI_BINARY}"
 
-    debug_log "change permissions for ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY}"
-    chmod +x ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY}
+    if command -v curl &> /dev/null; then
+        curl -fsSL -o ${VSH_CLI_DIR}/${VSH_CLI_BINARY} ${VSH_GITHUB_LATEST_CLI_RELEASE_BINARY} >> ${VSH_INSTALL_LOG} 2>&1
+    elif command -v wget &> /dev/null; then
+        wget -qO ${VSH_CLI_DIR}/${VSH_CLI_BINARY} ${VSH_GITHUB_LATEST_CLI_RELEASE_BINARY} >> ${VSH_INSTALL_LOG} 2>&1
+    else
+        out "ERROR: neither curl nor wget found. Please install curl or wget."
+        exit 1
+    fi
+
+    debug_log "change permissions for ${VSH_CLI_DIR}/${VSH_CLI_BINARY}"
+    chmod +x ${VSH_CLI_DIR}/${VSH_CLI_BINARY}
 else
-  debug_log "binary already exists: ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY}"
+  debug_log "binary already exists: ${VSH_CLI_DIR}/${VSH_CLI_BINARY}"
 fi
 
-debug_log "start setup ${VSH_INSTALLER_BINARY} setup"
-command ${VSH_INSTALLER_DIR}/${VSH_INSTALLER_BINARY} setup
+debug_log "start setup ${VSH_CLI_BINARY} setup"
+command ${VSH_CLI_DIR}/${VSH_CLI_BINARY} setup
 
 # output status
 echo ""
