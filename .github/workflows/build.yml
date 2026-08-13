@@ -1,11 +1,10 @@
 name: 'build'
 
 on:
-  schedule:
-    - cron: "30 4 * * *"
   push:
     branches:
-      - master
+      - 2.x
+      - 3.x
 
 jobs:
   shellcheck:
