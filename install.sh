@@ -99,6 +99,7 @@ else
 fi
 
 debug_log "create symlink for ${VSH_CLI_DIR}/${VSH_CLI_BINARY} to /usr/local/bin/${VSH_CLI_BINARY}"
+sudo mkdir -p /usr/local/bin
 sudo ln -sf "${VSH_CLI_DIR}/${VSH_CLI_BINARY}" /usr/local/bin/valet.sh
 
 debug_log "start setup ${VSH_CLI_BINARY} setup"
